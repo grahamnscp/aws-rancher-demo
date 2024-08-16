@@ -1,0 +1,44 @@
+# aws-cli Profile to use
+aws_profile = "default"
+
+# tags to use on the AWS resources (default_tags)
+aws_tags = {
+     Owner          = "myuser"
+     expirationDate = "20240831"
+     Purpose        = "DevTest"
+}
+
+# Prefix name that we prepend to the resource names
+prefix = "cluster1"
+
+# route53 hosted zone
+route53_zone_id   = "XXXXXXXXXXXXXXXXXXXXX"
+route53_domain    = "mydomain.com"
+route53_subdomain = "test"
+
+# AWS EC2 instance type
+# t3.small      2 vcpu -  2GB mem - $0.0208/hr
+# t3.medium     2 vcpu -  4GB mem - $0.0418/hr
+# t3.large      2 vcpu -  8GB mem - $0.0835/hr
+# t3.xlarge     4 vcpu - 16GB mem - $0.1670/hr
+# t3.2xlarge    8 vcpu - 32GB mem - $0.3341/hr
+#aws_instance_type_ran = "t3.2xlarge"
+aws_instance_type_ran = "t3.xlarge"
+
+# AWS EC2 ami
+# sles sp4 ami (amazon/suse-sles-15-sp4-v20221216-hvm-ssd-x86_64)
+aws_ami = "ami-0c544bda9765444c2"
+
+# Number of rancher instances
+ran_node_count = "3"
+
+# AWS EC2 root instance volume size (in GB)
+volume_size_ran = "100"
+
+# Existing AWS SSH key-pair name - https://docs.aws.amazon.com/console/ec2/key-pairs
+aws_key_name = "awsmyuser"
+
+# ingress CIDRs
+ip_cidr_me = "11.111.11.111/32"
+ip_cidr_work = "22.22.22.222/32"
+

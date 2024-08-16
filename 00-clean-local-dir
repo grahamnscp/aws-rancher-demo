@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -rf ./local/*
+echo 1 > ./local/.keep
+

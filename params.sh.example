@@ -1,0 +1,18 @@
+# Params.sh
+
+# params used in deployment scripts
+
+# aws access
+SSH_USERNAME=ec2-user
+SSH_KEY=/Users/myuser/.ssh/awsmyuser
+SSH_OPTS="-o StrictHostKeyChecking=no -i $SSH_KEY"
+
+# rke2
+#RKE2_VERSION="v1.27.10+rke2r1"
+RKE2_VERSION="v1.28.12+rke2r1"
+RKE2_TOKEN="myjointoken"
+
+# rancher
+RANCHERVERSION="2.8.6"
+BOOTSTRAPADMINPWD=myadminpwd
+
