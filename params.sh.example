@@ -13,6 +13,6 @@ RKE2_VERSION="v1.28.12+rke2r1"
 RKE2_TOKEN="myjointoken"
 
 # rancher
-RANCHERVERSION="2.8.6"
+RANCHERVERSION="2.9.0"
 BOOTSTRAPADMINPWD=myadminpwd
 
