@@ -16,6 +16,8 @@ To create a new cluster, click Create on the Cluster Management dashboard and se
 
 Enter the cluster details, note the region, availability zone and vpc where rancher is deployed and access setup.  
 The cluster nodes need an IAM instance profile for Kubernetes, ex: rancher_instance_profile used below.  
+[Example IAM rancher instance profile setup](./downstream-cluster-instance-profile.md)
+
 The AMI used here is SUSE SLES 15, ensure the Root Disk Device is sized for the AMI being used.  
 ![downstream-cluster-create-2](../assets/downstream-cluster-create-2.png)  
 
