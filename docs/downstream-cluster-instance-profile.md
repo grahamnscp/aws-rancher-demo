@@ -174,6 +174,6 @@ resource "aws_iam_instance_profile" "rancher_instance_profile" {
 ```
 
 ## Usage
-Use rancher_instance_profile in Rancher cluster Create for EC2 us-east-1
+Use **rancher_instance_profile** in Rancher cluster Create for EC2 us-east-1
 
 

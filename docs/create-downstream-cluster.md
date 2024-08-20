@@ -8,14 +8,14 @@ Before creating a cluster the node provider credentials need to be configured,
 example config:  
 [Example Create EC2 Credentials](./create-cloud-credentals.md)  
 
-## Create downstream cluster on ec2
+## Create downstream cluster on EC2
 
-To create a new cluster, click Create on the Cluster Management dashboard and select node provider Amazon EC2  
+To create a new cluster, click **Create** on the Cluster Management dashboard and select node provider **Amazon EC2**  
 
 ![downstream-cluster-create-1](../assets/downstream-cluster-create-1.png)  
 
 Enter the cluster details, note the region, availability zone and vpc where rancher is deployed and access setup.  
-The cluster nodes need an IAM instance profile for Kubernetes, ex: rancher_instance_profile used below.  
+The cluster nodes need an IAM instance profile for Kubernetes, ex: rancher_instance_profile:  
 [Example IAM rancher instance profile setup](./downstream-cluster-instance-profile.md)
 
 The AMI used here is SUSE SLES 15, ensure the Root Disk Device is sized for the AMI being used.  

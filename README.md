@@ -278,3 +278,6 @@ note: Added `./ssh/known_hosts` entries for the hosts should be manually tidied 
 ## Example Downstream cluster deployment
 [Example Downstream Cluster Deploy](docs/create-downstream-cluster.md)
 
+## Example Deploy Sample App
+[Example Deploy Sample App](docs/deploy-sample-app.md)
+
