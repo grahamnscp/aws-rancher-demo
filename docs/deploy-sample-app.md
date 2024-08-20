@@ -2,8 +2,8 @@
 
 ## Deploy
 
-A sample repo was added in demo1 cluster Explore -> Apps -> Repositories  
-Find an app using the Apps Charts search and click Install  
+A sample repo was added in demo1 cluster **Explore -> Apps -> Repositories**  
+Find an app using the Apps Charts search and click **Install**  
 ![downstream-cluster-app-deploy](../assets/downstream-cluster-app-deploy.png)  
 
 The application components and be explored and the app accessed via the Service (or Ingress if configured)  

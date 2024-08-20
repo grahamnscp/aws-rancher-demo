@@ -54,3 +54,6 @@ Clicking on the cluster nodes a shell can be opened directly in the Rancher UI..
 
 ![downstream-cluster-nodes](../assets/downstream-cluster-nodes.png)  
 
+
+## Example Deploy Sample App
+[Example Deploy Sample App](./deploy-sample-app.md)
