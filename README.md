@@ -275,3 +275,6 @@ note: Added `./ssh/known_hosts` entries for the hosts should be manually tidied 
   Access to cert-manager is required in this configuration for downstream clusters to validate the Rancher Manager self-signed-cert.
 
 
+## Example Downstream cluster deployment
+[Example Downstream Cluster Deploy](docs/create-downstream-cluster.md)
+
