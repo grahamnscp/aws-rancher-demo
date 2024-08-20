@@ -44,7 +44,7 @@ while ! $UP
 do
   ssh $SSH_OPTS ${SSH_USERNAME}@${NODEIP} "sudo test -e /etc/rancher/rke2/rke2.yaml && exit 10 </dev/null"
   if [ $? -eq 10 ]; then
-    echo Cluster is now configured..
+    Log " \__Cluster is now configured."
     UP=true
   else
     sleep $WAIT

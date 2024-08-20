@@ -69,6 +69,7 @@ for ((i=1; i<=$NUM_NODES; i++))
 do
   echo ${NODE_NAME[$i]} ${NODE_PUBLIC_IP[$i]} ${NODE_PRIVATE_IP[$i]}
 done
+echo 
 
 # Tidy up
 /bin/rm $TMP_FILE

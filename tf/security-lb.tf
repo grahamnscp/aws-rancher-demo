@@ -50,7 +50,7 @@ resource "aws_security_group" "ran-lb-sg" {
   # open 443
   ingress {
     description = "All 443"
-    from_port = 0
+    from_port = 443
     to_port = 443
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
@@ -58,7 +58,7 @@ resource "aws_security_group" "ran-lb-sg" {
   # open 8089
   ingress {
     description = "All 8089"
-    from_port = 0
+    from_port = 8089
     to_port = 8089
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
