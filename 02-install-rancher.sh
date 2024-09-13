@@ -31,8 +31,8 @@ helm repo update
 Log "\__helm install rancher (version=${RANCHERVERSION}).."
 #helm install rancher rancher-prime/rancher --namespace cattle-system --create-namespace \
 helm install rancher rancher-latest/rancher --namespace cattle-system --create-namespace \
+        --version=${RANCHERVERSION} \
         --set hostname=rancher.$DOMAINNAME \
-        --set version=${RANCHERVERSION} \
         --set bootstrapPassword=${BOOTSTRAPADMINPWD} \
         --set noDefaultAdmin=false \
         --set agentTLSMode=system-store
