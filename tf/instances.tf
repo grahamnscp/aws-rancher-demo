@@ -24,7 +24,7 @@ resource "aws_instance" "ran" {
   count = "${var.ran_node_count}"
 
   tags = {
-    Name = "${var.prefix}_ran${count.index + 1}"
+    Name = "${var.prefix}-ran-${count.index + 1}"
   }
 }
 

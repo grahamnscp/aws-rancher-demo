@@ -15,3 +15,4 @@ output "ran-instance-public-eips" {
 output "ran-instance-names" {
   value = ["${aws_route53_record.ran.*.name}"]
 }
+

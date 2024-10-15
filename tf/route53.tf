@@ -35,3 +35,4 @@ resource "aws_route53_record" "rancher" {
     evaluate_target_health = false
   }
 }
+
