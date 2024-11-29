@@ -24,13 +24,13 @@ helm install cert-manager jetstack/cert-manager \
 LogElapsedDuration
 
 Log "\__Add helm repo rancher-latest.."
-#helm repo add rancher-prime https://charts.rancher.com/server-charts/prime
-helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
+helm repo add rancher-prime https://charts.rancher.com/server-charts/prime
+#helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
 helm repo update
 
 Log "\__helm install rancher (version=${RANCHERVERSION}).."
-#helm install rancher rancher-prime/rancher --namespace cattle-system --create-namespace \
-helm install rancher rancher-latest/rancher --namespace cattle-system --create-namespace \
+#helm install rancher rancher-latest/rancher --namespace cattle-system --create-namespace \
+helm install rancher rancher-prime/rancher --namespace cattle-system --create-namespace \
         --version=${RANCHERVERSION} \
         --set hostname=rancher.$DOMAINNAME \
         --set bootstrapPassword=${BOOTSTRAPADMINPWD} \
@@ -57,6 +57,8 @@ done
 
 LogElapsedDuration
 LogCompleted "Done."
+
+echo "Rancher Manager is running at: https://rancher.$DOMAINNAME
 
 # tidy up
 exit 0

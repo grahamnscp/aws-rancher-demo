@@ -13,6 +13,12 @@ RKE2_VERSION="v1.28.12+rke2r1"
 RKE2_TOKEN="myjointoken"
 
 # rancher
+# helm search repo rancher-prime --versions
 RANCHERVERSION="2.9.0"
-BOOTSTRAPADMINPWD=myadminpwd
+BOOTSTRAPADMINPWD=mybootistrapadminpwd
+RANCHERADMINPWD=myadminpwd
+
+# downstream cluster1
+STORAGE_DEV1="nvme1n1"
+STORAGE_DEV2="nvme2n1"
 

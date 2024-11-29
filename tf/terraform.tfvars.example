@@ -26,8 +26,11 @@ route53_subdomain = "test"
 aws_instance_type_ran = "t3.xlarge"
 
 # AWS EC2 ami
+# Active images: https://pint.suse.com/?resource=images&search=sles-15-sp6&csp=amazon&region=us-east-1&state=active
 # sles sp4 ami (amazon/suse-sles-15-sp4-v20221216-hvm-ssd-x86_64)
-aws_ami = "ami-0c544bda9765444c2"
+#aws_ami = "ami-0c544bda9765444c2"
+# sles sp6 ami (amazon/suse-sles-15-sp6-v20241113-hvm-ssd-x86_64)
+aws_ami = "ami-0d9f9dbae7b9a241d"
 
 # Number of rancher instances
 ran_node_count = "3"
