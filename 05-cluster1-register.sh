@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#############################################################
+### Note: This script uses the rancher cli                ###
+###       Available on macos via brew install rancher-cli ###
+#############################################################
+
 source ./params.sh
 source ./utils.sh
 source ./load-tf-output.sh
