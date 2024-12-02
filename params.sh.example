@@ -14,11 +14,16 @@ RKE2_TOKEN="myjointoken"
 
 # rancher
 # helm search repo rancher-prime --versions
-RANCHERVERSION="2.9.0"
+RANCHERVERSION="2.9.3"
 BOOTSTRAPADMINPWD=mybootistrapadminpwd
 RANCHERADMINPWD=myadminpwd
 
 # downstream cluster1
 STORAGE_DEV1="nvme1n1"
 STORAGE_DEV2="nvme2n1"
+
+# SUSE Observability
+OBS_LICENSE="MY-SUSE-OBS-LICENCE-KEY-HERE"
+OBS_ADMIN_PWD=mysuseobsadminpwd
+OBS_HOSTNAME=obs.domainname
 

@@ -33,7 +33,7 @@ resource "aws_elb" "cluster1-elb" {
     healthy_threshold = 3
     unhealthy_threshold = 10
     timeout = 5
-    target = "TCP:443"
+    target = "TCP:6443"
     interval = 10
   }
 

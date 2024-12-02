@@ -18,7 +18,7 @@ echo token: $token
 
 # pull down rancher ca cert as rancher cli option --skip-verify is ignored atm
 Log "\__Downloading Rancher ca cert.."
-curl --insecure -s  https://rancher.demo.suselabs.net/cacerts > local/rancher_cacert.pem
+curl --insecure -s  https://$RANCHER_SERVER/cacerts > local/rancher_cacert.pem
 
 # list clusters
 #kubectl get clusters.provisioning.cattle.io --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
