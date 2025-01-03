@@ -38,6 +38,23 @@ resource "aws_security_group" "cluster1-lb-sg" {
     cidr_blocks = ["${var.ip_cidr_me}","${var.ip_cidr_work}"]
   }
 
+  # open 443
+  ingress {
+    description = "All 443"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  # open 8089
+  ingress {
+    description = "All 8089"
+    from_port = 8089
+    to_port = 8089
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # egress out for all
   egress {
     from_port = 0
