@@ -78,19 +78,13 @@ LogStarted "Installing SUSE Observability to cluster1.."
 # rke2-nginx-ingress already installed by default
 #installngnixingress
 
+# ----------------------------------------
 Log "\__Generating suse-observability helm template values.."
 gensuseobservabilityvalues
 
+# ----------------------------------------
 Log "\__Installing suse-observability on cluster1.."
 installsuseobservability
-
-# now install observability-agent - details via obs UI adding cluster with name 'cluster1'
-#helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
-#  --namespace suse-observability \
-#  --create-namespace \
-#  --set-string 'stackstate.apiKey'='????????????????????????????????' \
-#  --set-string 'stackstate.cluster.name'='cluster1' \
-#  --set-string 'stackstate.url'='https://$OBS_HOSTNAME/receiver/stsAgent'
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

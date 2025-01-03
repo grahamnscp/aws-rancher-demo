@@ -11,7 +11,7 @@ source ./load-tf-output.sh
 
 RANCHER_SERVER=rancher.$DOMAINNAME
 
-LogStarted "Registering downstream cluster1 with Rancher as ImportExisting cluster.."
+LogStarted "Registering downstream cluster2 with Rancher as ImportExisting cluster.."
 
 # fetch token via username / password
 token=$(curl -sk "https://$RANCHER_SERVER/v3-public/localProviders/local?action=login" \
@@ -43,8 +43,8 @@ echo rancher clusters:
 rancher cluster ls
 
 # define a cluster of provider type Imported
-Log "\__Defining downstream cluster1 in Rancher via rancher cli.."
-rancher cluster create cluster1 --import
+Log "\__Defining downstream cluster2 in Rancher via rancher cli.."
+rancher cluster create cluster2 --import
 
 sleep 5
 
@@ -52,17 +52,16 @@ Log "\__Query clusters using rancher cli.."
 echo rancher clusters:
 rancher cluster ls
 
-Log "\__Registring cluster1 with Rancher.."
-Log " \__Obtaining registration command for cluster1.."
+Log "\__Registring cluster2 with Rancher.."
+Log " \__Obtaining registration command for cluster2.."
 # output downstream import command
-curlcmd=$(rancher cluster import cluster1 | grep --color=never curl)
-echo import curl command: $curlcmd
-importcmd=`echo $curlcmd | sed 's/kubectl/kubectl --kubeconfig=.\/local\/admin-cluster1.conf/'`
+curlcmd=$(rancher cluster import cluster2 | grep --color=never curl)
+importcmd=`echo $curlcmd | sed 's/kubectl/kubectl --kubeconfig=.\/local\/admin-cluster2.conf/'`
 echo downstream cluster import command:
 echo $importcmd
 
-Log " \__Run kubectl registration command on cluster1 cluster.."
-# Registring cluster1 with Rancher..
+Log " \__Run kubectl registration command on cluster2 cluster.."
+# Registring cluster2 with Rancher..
 bash -c "$importcmd"
 
 

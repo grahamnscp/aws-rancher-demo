@@ -58,7 +58,5 @@ done
 LogElapsedDuration
 LogCompleted "Done."
 
-echo "Rancher Manager is running at: https://rancher.$DOMAINNAME
-
 # tidy up
 exit 0
