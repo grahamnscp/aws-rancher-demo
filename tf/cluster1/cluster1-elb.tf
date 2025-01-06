@@ -28,6 +28,26 @@ resource "aws_elb" "cluster1-elb" {
     instance_port = 80
     instance_protocol = "tcp"
   }
+  # for cert-manager verifications
+  listener {
+    lb_port = 8089
+    lb_protocol = "tcp"
+    instance_port = 8089
+    instance_protocol = "tcp"
+  }
+  # for suse-observability remote receivers
+  listener {
+    lb_port = 7070
+    lb_protocol = "tcp"
+    instance_port = 7070
+    instance_protocol = "tcp"
+  }
+  listener {
+    lb_port = 7077
+    lb_protocol = "tcp"
+    instance_port = 7077
+    instance_protocol = "tcp"
+  }
 
   health_check {
     healthy_threshold = 3
