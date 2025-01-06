@@ -26,7 +26,13 @@ Log "\__Installing suse-observability agent on cluster1.."
 obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml | grep --color=never receiverApiKey | awk '{print $2}' | sed 's/\"//g'`
 
 # install observability-agent - details via obs UI adding cluster with name 'cluster1'
-helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent --namespace suse-observability --create-namespace --set-string 'stackstate.apiKey'="$obs_api_key" --set-string 'stackstate.cluster.name'='cluster1' --set-string 'stackstate.url'="https://$OBS_HOSTNAME/receiver/stsAgent"
+helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
+     --namespace suse-observability --create-namespace \
+     --set-string 'stackstate.apiKey'="$obs_api_key" \
+     --set-string 'stackstate.cluster.name'='cluster1' \
+     --set-string 'stackstate.url'="https://$OBS_HOSTNAME/receiver/stsAgent" \
+     --set 'nodeAgent.skipKubeletTLSVerify'=true \
+     --set-string 'global.skipSslValidation'=true 
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration
