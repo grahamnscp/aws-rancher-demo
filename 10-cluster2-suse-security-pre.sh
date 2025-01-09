@@ -63,7 +63,7 @@ kubectl --kubeconfig=./local/admin-cluster2.conf create namespace cattle-neuvect
 kubectl --kubeconfig=./local/admin-cluster2.conf label namespace cattle-neuvector-system "pod-security.kubernetes.io/enforce=privileged"
 
 
-echo "Now install neuvector helm chart via rancher UI"
+echo "${BWhi}*** Now install neuvector helm chart via rancher UI ***${RCol}"
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

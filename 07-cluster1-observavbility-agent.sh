@@ -23,7 +23,9 @@ source ./utils.sh
 # -------------------------------------------------------------------------------------
 Log "\__Installing suse-observability agent on cluster1.."
 # fetch generated apikey from values template
-obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml | grep --color=never receiverApiKey | awk '{print $2}' | sed 's/\"//g'`
+#obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml | grep --color=never receiverApiKey | awk '{print $2}' | sed 's/\"//g'`
+obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml  | grep key | head -1 | awk '{print $2}' | sed 's/\"//g'`
+echo obs_api_key: $obs_api_key
 
 # install observability-agent - details via obs UI adding cluster with name 'cluster1'
 helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \

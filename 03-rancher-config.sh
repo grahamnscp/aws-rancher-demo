@@ -61,7 +61,10 @@ curl -sk "https://$RANCHER_SERVER/v3/users?action=changepassword" \
     -d "{\"currentPassword\":\"$BOOTSTRAPADMINPWD\",\"newPassword\":\"$RANCHERADMINPWD\"}"
 
 #
-echo "Rancher Manager is running at https://$RANCHER_SERVER"
+echo "${BWhi}**************************************"
+echo "Rancher Manager is running at:"
+echo "open https://$RANCHER_SERVER"
+echo "**************************************${RCol}"
 
 LogElapsedDuration
 LogCompleted "Done."
