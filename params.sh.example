@@ -27,3 +27,7 @@ OBS_LICENSE="MY-SUSE-OBS-LICENCE-KEY-HERE"
 OBS_ADMIN_PWD=mysuseobsadminpwd
 OBS_HOSTNAME=obs.domainname
 
+# downstream cluster2
+SEC_HOSTNAME=mysusesecurityadminpwd
+SEC_ADMIN_PWD=sec.domainname
+
