@@ -5,7 +5,7 @@ source ./utils.sh
 LogStarted "=====================================> Provisioning infra via terraform.."
 
 cd tf
-cp cluster1/*.tf .
+cp cluster1/* .
 terraform apply -auto-approve
 cd ..
 
