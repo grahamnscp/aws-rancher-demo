@@ -36,6 +36,9 @@ helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observabili
      --set 'nodeAgent.skipKubeletTLSVerify'=true \
      --set-string 'global.skipSslValidation'=true 
 
+Log "\__Waiting for suse-observability agent on cluster1 to be Ready.."
+kubectl --kubeconfig=local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready
+
 # -------------------------------------------------------------------------------------
 LogElapsedDuration
 LogCompleted "Done."
