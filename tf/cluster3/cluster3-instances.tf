@@ -31,8 +31,8 @@ resource "aws_instance" "cluster3" {
 # rke2 agents:
 resource "aws_instance" "cluster3-agents" {
 
-  instance_type = "${var.aws_instance_type_cluster3}"
-  ami           = "${var.aws_ami}"
+  instance_type = "${var.aws_instance_type_agent_cluster3}"
+  ami           = "${var.aws__ami}"
   key_name      = "${var.aws_key_name}"
 
   root_block_device {
