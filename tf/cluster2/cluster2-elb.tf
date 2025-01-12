@@ -28,6 +28,13 @@ resource "aws_elb" "cluster2-elb" {
     instance_port = 80
     instance_protocol = "tcp"
   }
+  # for cert-manager verifications
+  listener {
+    lb_port = 8089
+    lb_protocol = "tcp"
+    instance_port = 8089
+    instance_protocol = "tcp"
+  }
 
   health_check {
     healthy_threshold = 3

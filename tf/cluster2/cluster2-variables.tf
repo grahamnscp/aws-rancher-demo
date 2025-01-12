@@ -24,7 +24,8 @@ variable "volume_size_second_disk_cluster2" {
   type = string
   default = "200"
 }
-variable "volume_size_third_disk_cluster2" {
-  type = string
-  default = "200"
-}
+# needed if using portworx
+#variable "volume_size_third_disk_cluster2" {
+#  type = string
+#  default = "200"
+#}
