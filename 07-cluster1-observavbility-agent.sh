@@ -27,6 +27,13 @@ Log "\__Installing suse-observability agent on cluster1.."
 obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml  | grep key | head -1 | awk '{print $2}' | sed 's/\"//g'`
 echo obs_api_key: $obs_api_key
 
+
+# https://docs.stackstate.com/self-hosted-setup/security/authentication/service_tokens#set-up-a-bootstrap-service-token
+Log "\__Create suse-observability service token on cluster1.."
+
+echo "##########################TO-DO"
+
+
 # install observability-agent - details via obs UI adding cluster with name 'cluster1'
 helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
      --namespace suse-observability --create-namespace \

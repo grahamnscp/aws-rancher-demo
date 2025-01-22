@@ -4,7 +4,7 @@
 # rke3 masters:
 resource "aws_instance" "cluster3" {
 
-  instance_type = "${var.aws_instance_type_cluster3}"
+  instance_type = "${var.aws_instance_type_master_cluster3}"
   ami           = "${var.aws_ami}"
   key_name      = "${var.aws_key_name}"
 
@@ -21,7 +21,7 @@ resource "aws_instance" "cluster3" {
 
   user_data = "${file("cluster3-userdata.sh")}"
 
-  count = "${var.cluster3_node_count}"
+  count = "${var.cluster3_master_count}"
 
   tags = {
     Name = "${var.prefix}-cluster3-master${count.index + 1}"
@@ -32,7 +32,7 @@ resource "aws_instance" "cluster3" {
 resource "aws_instance" "cluster3-agents" {
 
   instance_type = "${var.aws_instance_type_agent_cluster3}"
-  ami           = "${var.aws__ami}"
+  ami           = "${var.aws_ami}"
   key_name      = "${var.aws_key_name}"
 
   root_block_device {
@@ -70,3 +70,4 @@ resource "aws_instance" "cluster3-agents" {
     Name = "${var.prefix}-cluster3-agent${count.index + 1}"
   }
 }
+

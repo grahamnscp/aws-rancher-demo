@@ -11,7 +11,7 @@ SEC_HOSTNAME=sec.$DOMAINNAME
 #
 function createsusesecurityvalues
 {
-  cat <<EOF > ./local/suse-security-values.yaml
+  cat <<EOF > ./local/suse-security-values-base.yaml
 bootstrapPassword: $SEC_ADMIN_PWD
 manager:
   ingress:
@@ -23,7 +23,7 @@ manager:
     tls: false
 EOF
 
-  cat <<EOF > ./local/suse-security-values.yaml
+  cat <<EOF > ./local/suse-security-values-rancher.yaml
 admissionwebhook:
   type: ClusterIP
 autoGenerateCert: true
@@ -386,7 +386,7 @@ function installsusesecurity
 {
   helm --kubeconfig=./local/admin-cluster2.conf upgrade --install neuvector neuvector/core \
        --namespace cattle-neuvector-system \
-       -f ./local/suse-security-values.yaml
+       -f ./local/suse-security-values-rancher.yaml
 
   kubectl --kubeconfig=./local/admin-cluster2.conf wait pods -n cattle-neuvector-system -l app=neuvector-manager-pod --for condition=Ready --timeout=180s
   kubectl --kubeconfig=./local/admin-cluster2.conf wait pods -n cattle-neuvector-system -l app=neuvector-controller-pod --for condition=Ready

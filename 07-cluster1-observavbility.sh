@@ -53,6 +53,20 @@ ingress:
   #      - stackstate.local
 ---
 EOF
+
+  # Create a bootstrap service token (to add stackpack later)
+  cat << EOF >./local/suse-observability-values/templates/authentication.yaml
+stackstate:
+  authentication:
+    servicetoken:
+      bootstrap:
+        token: $OBS_SERVICE_TOKEN
+        roles:
+          - stackstate-power-user
+        ttl: 24h
+---
+EOF
+
 }
 
 #
@@ -67,7 +81,8 @@ function installsuseobservability
     --namespace suse-observability --create-namespace \
     --values local/suse-observability-values/templates/baseConfig_values.yaml \
     --values local/suse-observability-values/templates/sizing_values.yaml \
-    --values local/suse-observability-values/templates/ingress_values.yaml 
+    --values local/suse-observability-values/templates/ingress_values.yaml \
+    --values local/suse-observability-values/templates/authentication.yaml
 }
 
 # -------------------------------------------------------------------------------------

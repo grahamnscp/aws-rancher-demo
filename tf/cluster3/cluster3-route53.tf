@@ -3,7 +3,7 @@
 # cluster3 entries
 resource "aws_route53_record" "cluster3" {
   zone_id = "${var.route53_zone_id}"
-  count = "${var.cluster3_node_count}"
+  count = "${var.cluster3_master_count}"
   name = "${var.prefix}-cluster3-master${count.index + 1}.${var.route53_subdomain}.${var.route53_domain}"
   type = "A"
   ttl = "300"

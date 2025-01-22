@@ -25,6 +25,12 @@ api_token=$(curl -sk "https://$RANCHER_SERVER/v3/token" \
            )
 echo api_token: $api_token
 
+if [ "$api_token" == "" ]
+then
+  LogError "Failed to get API token, exiting.."
+  exit 1
+fi
+
 # set rancher server url (needed so rancher cluster import cli creates registration urls)
 Log "\__Setting Rancher URL.."
 curl -sk "https://$RANCHER_SERVER/v3/settings/server-url" \

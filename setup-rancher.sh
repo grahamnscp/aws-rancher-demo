@@ -24,7 +24,7 @@ Log "===========================> installing rancher-manager.."
 bash 02-install-rancher.sh
 LogElapsedDuration
 
-sleep 10
+sleep 30
 
 Log "===========================> performing initial rancher-manager configuration.."
 bash 03-rancher-config.sh

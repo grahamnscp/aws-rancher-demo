@@ -1,16 +1,21 @@
 # Global Variables: cluster3
 
 # downstream clusters
-#
+
 # AWS EC2 instance type
 # t3.medium     2 vcpu -  4GB mem - $0.0418/hr
 # t3.large      2 vcpu -  8GB mem - $0.0835/hr
 # t3.xlarge     4 vcpu - 16GB mem - $0.1670/hr
 # t3.2xlarge    8 vcpu - 32GB mem - $0.3341/hr
-variable "aws_instance_type_cluster3" {
+variable "aws_instance_type_master_cluster3" {
   type = string
   default     = "t3.xlarge"
 }
+variable "cluster3_master_count" {
+  type = string
+  default = "3"
+}
+
 # Accelerated compute us-east-1:
 # p3.2xlarge   $3.06     8   61 GiB  EBS Only             Up to 10 Gigabit
 # g6.2xlarge   $0.9776   8   32 GiB  1 x 450 GB NVMe SSD  Up to 10 Gigabit
@@ -24,17 +29,14 @@ variable "aws_instance_type_cluster3" {
 # inf1.2xlarge $0.362    8   16 GiB  EBS Only             Up to 25 Gigabit
 variable "aws_instance_type_agent_cluster3" {
   type = string
-  default     = "g5g.2xlarge"
-}
-# downstream test cluster nodes
-variable "cluster3_node_count" {
-  type = string
-  default = "3"
+  default     = "t3.xlarge"
 }
 variable "cluster3_agent_count" {
   type = string
-  default = "2"
+  default = "3"
 }
+
+# volumes
 variable "volume_size_cluster3" {
   type = string
   default = "300"
@@ -47,3 +49,4 @@ variable "volume_size_second_disk_cluster3" {
 #  type = string
 #  default = "200"
 #}
+
