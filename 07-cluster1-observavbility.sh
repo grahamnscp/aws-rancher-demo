@@ -102,7 +102,7 @@ Log "\__Installing suse-observability on cluster1.."
 installsuseobservability
 
 Log "\__waiting for suse-observability on cluster1 to be Ready.."
-kubectl --kubeconfig=local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=obs --for condition=Ready
+kubectl --kubeconfig=local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=obs --for condition=Ready --timeout=900s
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

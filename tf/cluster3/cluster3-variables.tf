@@ -29,7 +29,7 @@ variable "cluster3_master_count" {
 # inf1.2xlarge $0.362    8   16 GiB  EBS Only             Up to 25 Gigabit
 variable "aws_instance_type_agent_cluster3" {
   type = string
-  default     = "t3.xlarge"
+  default     = "g4ad.2xlarge"
 }
 variable "cluster3_agent_count" {
   type = string

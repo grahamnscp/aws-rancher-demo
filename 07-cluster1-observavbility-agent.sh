@@ -29,9 +29,8 @@ echo obs_api_key: $obs_api_key
 
 
 # https://docs.stackstate.com/self-hosted-setup/security/authentication/service_tokens#set-up-a-bootstrap-service-token
-Log "\__Create suse-observability service token on cluster1.."
-
-echo "##########################TO-DO"
+#Log "\__Create suse-observability service token on cluster1.."
+#echo "##########################TO-DO"
 
 
 # install observability-agent - details via obs UI adding cluster with name 'cluster1'
@@ -44,7 +43,7 @@ helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observabili
      --set-string 'global.skipSslValidation'=true 
 
 Log "\__Waiting for suse-observability agent on cluster1 to be Ready.."
-kubectl --kubeconfig=local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready
+kubectl --kubeconfig=local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration
