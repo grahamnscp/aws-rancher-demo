@@ -18,17 +18,17 @@ RANCHERVERSION="2.9.3"
 BOOTSTRAPADMINPWD=mybootistrapadminpwd
 RANCHERADMINPWD=myadminpwd
 
-# downstream cluster1
+# downstream cluster1 & cluster3
 STORAGE_DEV1="nvme1n1"
 STORAGE_DEV2="nvme2n1"
 
 # SUSE Observability
 OBS_LICENSE="MY-SUSE-OBS-LICENCE-KEY-HERE"
-OBS_ADMIN_PWD=mysuseobsadminpwd
 OBS_HOSTNAME=obs.domainname
+OBS_ADMIN_PWD=mysuseobsadminpwd
 OBS_SERVICE_TOKEN=mytokenvalue
 
 # downstream cluster2
-SEC_HOSTNAME=mysusesecurityadminpwd
-SEC_ADMIN_PWD=sec.domainname
+SEC_HOSTNAME=sec.domainname
+SEC_ADMIN_PWD=mysusesecurityadminpwd
 
