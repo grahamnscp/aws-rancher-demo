@@ -33,7 +33,7 @@ variable "aws_instance_type_agent_cluster3" {
 }
 variable "cluster3_agent_count" {
   type = string
-  default = "3"
+  default = "1"
 }
 
 # volumes

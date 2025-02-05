@@ -2,7 +2,7 @@
 
 source ./utils.sh
 
-LogStarted "=====================================> Provisioning infra via terraform.."
+LogStarted "=====================================> Provisioning cluster1 infra via terraform.."
 
 cd tf
 cp cluster1/* .
