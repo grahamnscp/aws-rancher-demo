@@ -22,6 +22,11 @@ LogElapsedDuration
 
 LogStarted "=====================================> Calling subscripts to install cluster3.."
 
+Log "===========================> cluster3: checking nvidia driver on agent nodes.."
+bash cluster3/00-cluster3-nvidia-check.sh
+LogElapsedDuration
+
+
 Log "===========================> cluster3: installing RKE2 cluster.."
 bash cluster3/01-cluster3-rke2.sh
 LogElapsedDuration
