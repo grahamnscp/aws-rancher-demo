@@ -46,13 +46,13 @@ Log "===========================> cluster3: deploying observability agent for cl
 bash cluster3/04-cluster3-obs-agent.sh
 LogElapsedDuration
 
-# todo: nvidia operator
-# todo: suse application collection auth
-# todo: install suse ai components, db etc..
+# cluster config for suse ai
+Log "===========================> cluster3: configuring cluster for suse ai.."
+bash cluster3/05-cluster3-ai-config.sh
+LogElapsedDuration
 
 # --------------------------------------
 
-LogElapsedDuration
 LogCompleted "Done."
 
 # tidy up
