@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./utils.sh
+source ./utils/utils.sh
 
 LogStarted "=====================================> Provisioning cluster3 infra via terraform.."
 
@@ -23,26 +23,25 @@ LogElapsedDuration
 LogStarted "=====================================> Calling subscripts to install cluster3.."
 
 Log "===========================> cluster3: installing RKE2 cluster.."
-bash 11-cluster3-rke2.sh
-LogElapsedDuration
-
-# todo: nvidia operator
-
-# install longhorn
-Log "===========================> cluster3: deploying longhorn onto cluster.."
-bash 13-cluster3-longhorn.sh
+bash cluster3/01-cluster3-rke2.sh
 LogElapsedDuration
 
 # register with rancher manager
 Log "===========================> cluster3: registering existing cluster with rancher manager.."
-bash 12-cluster3-register.sh
+bash cluster3/02-cluster3-register.sh
+LogElapsedDuration
+
+# install longhorn
+Log "===========================> cluster3: deploying longhorn onto cluster.."
+bash cluster3/03-cluster3-longhorn.sh
 LogElapsedDuration
 
 # deploy observability receiver on ai cluster (opentelemetry?)
 Log "===========================> cluster3: deploying observability agent for cluster3.."
-bash 14-cluster3-obs-agent.sh
+bash cluster3/04-cluster3-obs-agent.sh
 LogElapsedDuration
 
+# todo: nvidia operator
 # todo: suse application collection auth
 # todo: install suse ai components, db etc..
 

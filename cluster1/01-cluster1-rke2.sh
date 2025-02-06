@@ -1,8 +1,8 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
-source ./load-tf-output-cluster1.sh
+source ./utils/utils.sh
+source cluster1/load-tf-output-cluster1.sh
 
 # first instance
 NODENAME=${NODE_NAME[1]}

@@ -1,8 +1,9 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
-source ./load-tf-output-cluster2.sh
+source ./utils/utils.sh
+source cluster2/load-tf-output-cluster2.sh
+
 SEC_HOSTNAME=sec.$DOMAINNAME
 
 # -------------------------------------------------------------------------------------

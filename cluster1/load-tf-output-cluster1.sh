@@ -1,11 +1,11 @@
 #/bin/bash -x
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 
 TMP_FILE=/tmp/load-tf-output.tmp.$$
 
-Log "Collecting terraform output values (cluster2).."
+Log "Collecting terraform output values (cluster1).."
 
 # Collect node details from terraform output
 CWD=`pwd`
@@ -32,7 +32,7 @@ do
       done
       ;;
 
-    "cluster2-instance-names")
+    "cluster1-instance-names")
       COUNT=0
       for entry in $(echo $var_value |sed "s/,/ /g")
       do
@@ -42,7 +42,7 @@ do
       NUM_NODES=$COUNT
       ;;
 
-    "cluster2-instance-private-ips")
+    "cluster1-instance-private-ips")
       COUNT=0
       for entry in $(echo $var_value |sed "s/,/ /g")
       do
@@ -51,7 +51,7 @@ do
       done
       ;;
 
-    "cluster2-instance-public-ips")
+    "cluster1-instance-public-ips")
       COUNT=0
       for entry in $(echo $var_value |sed "s/,/ /g")
       do

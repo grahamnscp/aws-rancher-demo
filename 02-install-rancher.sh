@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 source ./load-tf-output.sh
 
 export KUBECONFIG=./local/admin.conf
@@ -26,6 +26,8 @@ LogElapsedDuration
 Log "\__Add helm repo rancher-latest.."
 helm repo add rancher-prime https://charts.rancher.com/server-charts/prime
 #helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
+#helm search repo rancher-prime --versions
+#helm show values rancher-prime/rancher
 helm repo update
 
 Log "\__helm install rancher (version=${RANCHERVERSION}).."

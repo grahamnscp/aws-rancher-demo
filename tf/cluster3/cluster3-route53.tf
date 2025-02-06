@@ -7,7 +7,7 @@ resource "aws_route53_record" "cluster3" {
   name = "${var.prefix}-cluster3-master${count.index + 1}.${var.route53_subdomain}.${var.route53_domain}"
   type = "A"
   ttl = "300"
-  records = ["${element(aws_instance.cluster3.*.public_ip, count.index)}"]
+  records = ["${element(aws_eip.cluster3-masters-eip.*.public_ip, count.index)}"]
 }
 resource "aws_route53_record" "cluster3-agents" {
   zone_id = "${var.route53_zone_id}"
@@ -15,7 +15,7 @@ resource "aws_route53_record" "cluster3-agents" {
   name = "${var.prefix}-cluster3-agent${count.index + 1}.${var.route53_subdomain}.${var.route53_domain}"
   type = "A"
   ttl = "300"
-  records = ["${element(aws_instance.cluster3-agents.*.public_ip, count.index)}"]
+  records = ["${element(aws_eip.cluster3-agents-eip.*.public_ip, count.index)}"]
 }
 
 resource "aws_route53_record" "rke-cluster3" {
@@ -23,7 +23,7 @@ resource "aws_route53_record" "rke-cluster3" {
   name = "rke-cluster3.${var.route53_subdomain}.${var.route53_domain}"
   type = "CNAME"
   ttl = "60"
-  records = [aws_route53_record.cluster3.0.name]
+  records = [aws_elb.cluster3-rke-elb.dns_name]
 }
 
 # cluster3 app elb alias

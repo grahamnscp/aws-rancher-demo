@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm -rf ./tf/cluster1-*
+rm -rf ./tf/cluster2-*
+rm -rf ./tf/cluster3-*
+

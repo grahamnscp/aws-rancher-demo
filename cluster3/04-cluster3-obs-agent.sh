@@ -1,12 +1,12 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 
 # -------------------------------------------------------------------------------------
 Log "\__Provisioning kubernetes-v2 stackpack for cluster3.."
 CLUSTER_NAME=cluster3
-STS_TOKEN=`cat local/sts-token.txt`
+STS_TOKEN=`cat ./local/sts-token.txt`
 curl -sk https://$OBS_HOSTNAME/api/stackpack/kubernetes-v2/provision \
      -X POST \
      -H "Content-Type: application/json" \
@@ -34,7 +34,7 @@ helm --kubeconfig=./local/admin-cluster3.conf upgrade --install suse-observabili
      --set-string 'global.skipSslValidation'=true
 
 Log "\__Waiting for suse-observability agent on cluster3 to be Ready.."
-kubectl --kubeconfig=local/admin-cluster3.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
+kubectl --kubeconfig=./local/admin-cluster3.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
 
 
 # -------------------------------------------------------------------------------------

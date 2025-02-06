@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./utils.sh
+source ./utils/utils.sh
 
 LogStarted "=====================================> Provisioning cluster1 infra via terraform.."
 
@@ -9,6 +9,7 @@ cp cluster1/* .
 terraform apply -auto-approve
 cd ..
 
+Log "sleeping to wait for instances to initialise.."
 sleep 10
 LogElapsedDuration
 
@@ -16,19 +17,23 @@ LogElapsedDuration
 LogStarted "=====================================> Calling subscripts to install cluster1.."
 
 Log "===========================> cluster1: installing RKE2 cluster.."
-bash 04-cluster1-rke2.sh
+bash cluster1/01-cluster1-rke2.sh
 LogElapsedDuration
 
 Log "===========================> cluster1: importing to rancher-manager.."
-bash 05-cluster1-register.sh
+bash cluster1/02-cluster1-register.sh
 LogElapsedDuration
 
 Log "===========================> cluster1: installing longhorn.."
-bash 06-cluster1-longhorn.sh
+bash cluster1/03-cluster1-longhorn.sh
 LogElapsedDuration
 
 Log "===========================> cluster1: installing suse observability.."
-bash 07-cluster1-observavbility.sh
+bash cluster1/04-cluster1-observavbility.sh
+LogElapsedDuration
+
+Log "===========================> cluster1: post install configuring  suse observability.."
+bash cluster1/05-cluster1-obs-config.sh
 LogElapsedDuration
 
 # --------------------------------------

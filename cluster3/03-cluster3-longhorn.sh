@@ -1,8 +1,8 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
-source ./load-tf-output-cluster1.sh
+source ./utils/utils.sh
+source cluster3/load-tf-output-cluster3.sh
 
 # -------------------------------------------------------------------------------------
 # functions:
@@ -12,7 +12,7 @@ function longhornstoragescript
 {
   Log "function longhornstoragescript:"
 
-  cat << EOF >./local/cluster1-longhorn-partition.sh
+  cat << EOF >./local/cluster3-longhorn-partition.sh
 #!/bin/bash
 
 VGNAME="vg_longhorn"
@@ -69,9 +69,9 @@ function mountlonghornstorage
 
   Log "\__Partitioning storage disk on node $ANODENAME"
 
-  scp $SSH_OPTS ./local/cluster1-longhorn-partition.sh ${SSH_USERNAME}@${ANODEIP}:~/
-  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo chmod +x ~/cluster1-longhorn-partition.sh"
-  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo ~/cluster1-longhorn-partition.sh 2>&1 > ~/cluster1-longhorn-partition.log 2>&1"
+  scp $SSH_OPTS ./local/cluster3-longhorn-partition.sh ${SSH_USERNAME}@${ANODEIP}:~/
+  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo chmod +x ~/cluster3-longhorn-partition.sh"
+  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo ~/cluster3-longhorn-partition.sh 2>&1 > ~/cluster3-longhorn-partition.log 2>&1"
 }
 
 #
@@ -80,24 +80,24 @@ function helminstalllonghorn
   Log "function helminstalllonghorn:"
 
   # create namespace
-  kubectl --kubeconfig=./local/admin-cluster1.conf create namespace longhorn-system
+  kubectl --kubeconfig=./local/admin-cluster3.conf create namespace longhorn-system
 
   # helm install longhorn
   helm repo add longhorn https://charts.longhorn.io
   helm repo update
-  helm --kubeconfig=./local/admin-cluster1.conf install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace 
+  helm --kubeconfig=./local/admin-cluster3.conf install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace 
 }
 
 
 # -------------------------------------------------------------------------------------
 # Main
-LogStarted "Installing Longhorn on cluster1.."
+LogStarted "Installing Longhorn on cluster3.."
 
 Log "\__Generating longhorn storage script.."
 # generate partitioning script
 longhornstoragescript $node
 
-Log "\__Mounting longhorn volume on cluster1 nodes.."
+Log "\__Mounting longhorn volume on cluster3 nodes.."
 # mounts longhorn storage on each node
 for node in $(seq 1 3);
 do
@@ -105,7 +105,10 @@ do
   LogElapsedDuration
 done
 
-Log "\__Installing longhorn on cluster1 via helm.."
+# todo:
+#  provision on agent nodes..
+
+Log "\__Installing longhorn on cluster3 via helm.."
 helminstalllonghorn
 
 

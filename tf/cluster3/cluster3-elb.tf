@@ -1,9 +1,9 @@
 # elb for rancher
 
 # elb on master nodes
-resource "aws_elb" "cluster3-elb" {
+resource "aws_elb" "cluster3-rke-elb" {
 
-  name = "${var.prefix}-cluster3-elb"
+  name = "${var.prefix}-cluster3-rke-elb"
 
   subnets = [
     "${aws_subnet.dc-subnet1.id}",

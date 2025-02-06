@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 
 # -------------------------------------------------------------------------------------
 # functions:
@@ -63,7 +63,7 @@ kubectl --kubeconfig=./local/admin-cluster2.conf create namespace cattle-neuvect
 kubectl --kubeconfig=./local/admin-cluster2.conf label namespace cattle-neuvector-system "pod-security.kubernetes.io/enforce=privileged"
 
 
-echo "${BWhi}*** Now install neuvector helm chart via rancher UI ***${RCol}"
+#echo "${BWhi}*** Now install neuvector helm chart via rancher UI ***${RCol}"
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

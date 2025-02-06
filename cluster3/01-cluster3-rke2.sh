@@ -1,8 +1,8 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
-source ./load-tf-output-cluster3.sh
+source ./utils/utils.sh
+source cluster3/load-tf-output-cluster3.sh
 
 # -------------------------------------------------------------------------------------
 # Functions:
@@ -228,6 +228,7 @@ LogElapsedDuration
 rke2nodewait 3 ${NODE_PUBLIC_IP[3]}
 LogElapsedDuration
 
+----
 echo
 Log "Installing RKE2 agent nodes.."
 for ((i=1; i<=$NUM_AGENTS; i++))

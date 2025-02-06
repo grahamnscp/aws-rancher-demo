@@ -6,12 +6,12 @@
 #############################################################
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 source ./load-tf-output.sh
 
 RANCHER_SERVER=rancher.$DOMAINNAME
 
-LogStarted "Registering downstream cluster2 with Rancher as ImportExisting cluster.."
+LogStarted "Registering downstream cluster1 with Rancher as ImportExisting cluster.."
 
 # fetch token via username / password
 token=$(curl -sk "https://$RANCHER_SERVER/v3-public/localProviders/local?action=login" \
@@ -23,7 +23,7 @@ echo token: $token
 
 # pull down rancher ca cert as rancher cli option --skip-verify is ignored atm
 Log "\__Downloading Rancher ca cert.."
-curl --insecure -s  https://$RANCHER_SERVER/cacerts > local/rancher_cacert.pem
+curl --insecure -s  https://$RANCHER_SERVER/cacerts > ./local/rancher_cacert.pem
 
 # list clusters
 #kubectl get clusters.provisioning.cattle.io --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
@@ -37,14 +37,16 @@ echo cluster: local project is: $localns
 Log "\__Authenticating rancher cli.."
 rancher login https://$RANCHER_SERVER --token $token --skip-verify --cacert ./local/rancher_cacert.pem --context local:$localns
 
+sleep 5
+
 # clusters
 Log "\__Query clusters using rancher cli.."
 echo rancher clusters:
 rancher cluster ls
 
 # define a cluster of provider type Imported
-Log "\__Defining downstream cluster2 in Rancher via rancher cli.."
-rancher cluster create cluster2 --import
+Log "\__Defining downstream cluster1 in Rancher via rancher cli.."
+rancher cluster create cluster1 --import
 
 sleep 5
 
@@ -52,16 +54,17 @@ Log "\__Query clusters using rancher cli.."
 echo rancher clusters:
 rancher cluster ls
 
-Log "\__Registring cluster2 with Rancher.."
-Log " \__Obtaining registration command for cluster2.."
+Log "\__Registring cluster1 with Rancher.."
+Log " \__Obtaining registration command for cluster1.."
 # output downstream import command
-curlcmd=$(rancher cluster import cluster2 | grep --color=never curl)
-importcmd=`echo $curlcmd | sed 's/kubectl/kubectl --kubeconfig=.\/local\/admin-cluster2.conf/'`
+curlcmd=$(rancher cluster import cluster1 | grep --color=never curl)
+echo import curl command: $curlcmd
+importcmd=`echo $curlcmd | sed 's/kubectl/kubectl --kubeconfig=.\/local\/admin-cluster1.conf/'`
 echo downstream cluster import command:
 echo $importcmd
 
-Log " \__Run kubectl registration command on cluster2 cluster.."
-# Registring cluster2 with Rancher..
+Log " \__Run kubectl registration command on cluster1 cluster.."
+# Registring cluster1 with Rancher..
 bash -c "$importcmd"
 
 

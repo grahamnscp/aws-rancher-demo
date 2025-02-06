@@ -1,11 +1,11 @@
 #/bin/bash -x
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 
 TMP_FILE=/tmp/load-tf-output.tmp.$$
 
-Log "Collecting terraform output values (cluster3).."
+Log "Collecting terraform output values (cluster2).."
 
 # Collect node details from terraform output
 CWD=`pwd`
@@ -32,8 +32,7 @@ do
       done
       ;;
 
-    # masters
-    "cluster3-instance-names")
+    "cluster2-instance-names")
       COUNT=0
       for entry in $(echo $var_value |sed "s/,/ /g")
       do
@@ -43,7 +42,7 @@ do
       NUM_NODES=$COUNT
       ;;
 
-    "cluster3-instance-private-ips")
+    "cluster2-instance-private-ips")
       COUNT=0
       for entry in $(echo $var_value |sed "s/,/ /g")
       do
@@ -52,41 +51,12 @@ do
       done
       ;;
 
-    "cluster3-instance-public-ips")
+    "cluster2-instance-public-ips")
       COUNT=0
       for entry in $(echo $var_value |sed "s/,/ /g")
       do
         COUNT=$(($COUNT+1))
         NODE_PUBLIC_IP[$COUNT]=$entry
-      done
-      ;;
-
-    # agents
-    "cluster3-instance-agent-names")
-      COUNT=0
-      for entry in $(echo $var_value |sed "s/,/ /g")
-      do
-        COUNT=$(($COUNT+1))
-        AGENT_NAME[$COUNT]=$entry
-      done
-      NUM_AGENTS=$COUNT
-      ;;
-
-    "cluster3-instance-agent-private-ips")
-      COUNT=0
-      for entry in $(echo $var_value |sed "s/,/ /g")
-      do
-        COUNT=$(($COUNT+1))
-        AGENT_PRIVATE_IP[$COUNT]=$entry
-      done
-      ;;
-
-    "cluster3-instance-agent-public-ips")
-      COUNT=0
-      for entry in $(echo $var_value |sed "s/,/ /g")
-      do
-        COUNT=$(($COUNT+1))
-        AGENT_PUBLIC_IP[$COUNT]=$entry
       done
       ;;
 
@@ -97,11 +67,6 @@ done
 for ((i=1; i<=$NUM_NODES; i++))
 do
   echo ${NODE_NAME[$i]} ${NODE_PUBLIC_IP[$i]} ${NODE_PRIVATE_IP[$i]}
-done
-echo 
-for ((i=1; i<=$NUM_AGENTS; i++))
-do
-  echo ${AGENT_NAME[$i]} ${AGENT_PUBLIC_IP[$i]} ${AGENT_PRIVATE_IP[$i]}
 done
 echo 
 

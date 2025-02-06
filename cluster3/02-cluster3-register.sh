@@ -6,7 +6,7 @@
 #############################################################
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 source ./load-tf-output.sh
 
 RANCHER_SERVER=rancher.$DOMAINNAME
@@ -23,10 +23,10 @@ echo token: $token
 
 # pull down rancher ca cert as rancher cli option --skip-verify is ignored atm
 Log "\__Downloading Rancher ca cert.."
-curl --insecure -s  https://$RANCHER_SERVER/cacerts > local/rancher_cacert.pem
+curl --insecure -s  https://$RANCHER_SERVER/cacerts > ./local/rancher_cacert.pem
 
 # list clusters
-#kubectl get clusters.provisioning.cattle.io --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+#kubectl --kubeconfig=./local/admin.conf get clusters.provisioning.cattle.io --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
 
 # obtain local cluster project for rancher cli context
 Log "\__Obtaining Rancher local cluster details for rancher cli login context.."

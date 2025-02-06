@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 source ./load-tf-output.sh
 
 export KUBECONFIG=./local/admin.conf

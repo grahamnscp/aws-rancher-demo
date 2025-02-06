@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./utils.sh
+source ./utils/utils.sh
 
 LogStarted "=====================================> Provisioning infra via terraform.."
 
@@ -8,6 +8,7 @@ cd tf
 terraform apply -auto-approve
 cd ..
 
+Log "sleeping to wait for instances to initialise.."
 sleep 10
 LogElapsedDuration
 
