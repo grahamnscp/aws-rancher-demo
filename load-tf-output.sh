@@ -1,7 +1,7 @@
 #/bin/bash -x
 
 source ./params.sh
-source ./utils.sh
+source ./utils/utils.sh
 
 TMP_FILE=/tmp/load-tf-output.tmp.$$
 
