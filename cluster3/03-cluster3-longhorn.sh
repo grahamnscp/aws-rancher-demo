@@ -60,11 +60,30 @@ function mountlonghornstorage
 {
   NODENUM=$1
 
-  Log "function mountlonghornstorage: for node $NODENUM"
+  Log "function mountlonghornstorage: for master node $NODENUM"
 
   ANODEIP=${NODE_PUBLIC_IP[$NODENUM]}
   ANODENAME=${NODE_NAME[$NODENUM]}
   APRIVATEIP=${NODE_PRIVATE_IP[$NODENUM]}
+  ANODEN=$(echo $ANODENAME | cut -d. -f1)
+
+  Log "\__Partitioning storage disk on node $ANODENAME"
+
+  scp $SSH_OPTS ./local/cluster3-longhorn-partition.sh ${SSH_USERNAME}@${ANODEIP}:~/
+  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo chmod +x ~/cluster3-longhorn-partition.sh"
+  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo ~/cluster3-longhorn-partition.sh 2>&1 > ~/cluster3-longhorn-partition.log 2>&1"
+}
+
+#
+function mountlonghornstorage-agent
+{
+  NODENUM=$1
+
+  Log "function mountlonghornstorage-agent: for agent node $NODENUM"
+
+  ANODEIP=${AGENT_PUBLIC_IP[$NODENUM]}
+  ANODENAME=${AGENT_NAME[$NODENUM]}
+  APRIVATEIP=${AGENT_PRIVATE_IP[$NODENUM]}
   ANODEN=$(echo $ANODENAME | cut -d. -f1)
 
   Log "\__Partitioning storage disk on node $ANODENAME"
@@ -97,16 +116,21 @@ Log "\__Generating longhorn storage script.."
 # generate partitioning script
 longhornstoragescript $node
 
-Log "\__Mounting longhorn volume on cluster3 nodes.."
-# mounts longhorn storage on each node
+Log "\__Mounting longhorn volume on cluster3 master nodes.."
+# mounts longhorn storage on each master node
 for node in $(seq 1 3);
 do
   mountlonghornstorage $node
   LogElapsedDuration
 done
 
-# todo:
-#  provision on agent nodes..
+Log "\__Mounting longhorn volume on cluster3 agent nodes.."
+# mounts longhorn storage on each agent node
+for ((node=1; node<=$NUM_AGENTS; node++))
+do
+  mountlonghornstorage-agent $node
+  LogElapsedDuration
+done
 
 Log "\__Installing longhorn on cluster3 via helm.."
 helminstalllonghorn
