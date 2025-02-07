@@ -16,7 +16,7 @@ The idea is that you don't need to deploy everything every time, so can pick and
 
 The downstream clusters are all installed as freestanding RKE2 clusters and then added to Rancher Manager using Import Existing.
 
-The downstream scripts are designed to be called from the top-level directory, ex cluster1/load-tf-output-cluster1.sh  
+The downstream scripts are designed to be called from the top-level directory, ex ./cluster1/load-tf-output-cluster1.sh  
 There are wrapper scripts to install all cluster subscripts, setup-xyx, run setup-rancher first, if looking to install suse ai this sends data to suse observability so run setup-observability before setup-ai etc
 
 ## Notes
