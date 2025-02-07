@@ -281,3 +281,6 @@ note: Added `./ssh/known_hosts` entries for the hosts should be manually tidied 
 ## Example Deploy Sample App
 [Example Deploy Sample App](docs/deploy-sample-app.md)
 
+## Scripted downstream cluster for SUSE Observability, Security and AI
+This repo has some preprapared downstream cluster installations
+[Cluster1,2,3 Downstream Clusters](docs/downstream-demo-clusterx-scripts.md)
