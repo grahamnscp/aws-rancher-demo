@@ -1,4 +1,4 @@
-# Downstream demo clusterx script
+# Downstream demo clusterx details
 
 ## What are they?
 This repo contains a number of downstream clusters labeled clusterx  
