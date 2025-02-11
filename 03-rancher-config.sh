@@ -8,6 +8,22 @@ export KUBECONFIG=./local/admin.conf
 RANCHER_SERVER=rancher.$DOMAINNAME
 
 LogStarted "Rancher Manager Config.."
+
+LogStarted "\__Checking Rancher Server is UP.."
+while true 
+do 
+  curl -kv https://$RANCHER_SERVER 2>&1 | grep -q "dynamiclistener-ca" 
+  if [ $? != 0 ]
+  then
+    echo "Waiting for Rancher Manager Server to be ready.."
+    sleep 5
+    continue
+  fi
+  break
+done
+echo "Rancher Manager Server is Ready";
+
+Log "\__Authenticating to Rancher Manager API.."
 # login with username / password
 token=$(curl -sk "https://$RANCHER_SERVER/v3-public/localProviders/local?action=login" \
              -X POST \

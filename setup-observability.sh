@@ -32,7 +32,7 @@ Log "===========================> cluster1: installing suse observability.."
 bash cluster1/04-cluster1-observavbility.sh
 LogElapsedDuration
 
-Log "===========================> cluster1: post install configuring  suse observability.."
+Log "===========================> cluster1: post install configuring suse observability.."
 bash cluster1/05-cluster1-obs-config.sh
 LogElapsedDuration
 

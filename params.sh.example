@@ -28,7 +28,11 @@ OBS_HOSTNAME=obs.domainname
 OBS_ADMIN_PWD=mysuseobsadminpwd
 OBS_SERVICE_TOKEN=mytokenvalue
 
-# downstream cluster2
+# SUSE Security
 SEC_HOSTNAME=sec.domainname
 SEC_ADMIN_PWD=mysusesecurityadminpwd
+
+# SUSE Application Collection
+APPCOL_USER="my@emaildomain.com"
+APPCOL_TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=="
 
