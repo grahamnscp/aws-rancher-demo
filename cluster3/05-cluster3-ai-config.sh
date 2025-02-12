@@ -68,6 +68,7 @@ kubectl --kubeconfig=./local/admin-cluster3.conf create secret docker-registry a
 # ----------------------------
 # milvus
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#milvus-installing
+#  https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus
 
 Log "\_Installing milvus database.."
 
@@ -122,12 +123,12 @@ kafka:
     storageClassName: "longhorn"
 MVEOF
 
-Log " \_Installing milvus database.."
-helm upgrade --kubeconfig=./local/admin-cluster3.conf \
-  --install milvus oci://dp.apps.rancher.io/charts/milvus \
-  -n suse-ai \
-  -f ./local/cluster3-milvus-values.yaml \
-  --timeout=10m
+#Log " \_Installing milvus database.."
+#helm upgrade --kubeconfig=./local/admin-cluster3.conf \
+#  --install milvus oci://dp.apps.rancher.io/charts/milvus \
+#  -n suse-ai \
+#  -f ./local/cluster3-milvus-values.yaml \
+#  --timeout=10m
 
 # ollama
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#ollama-installing
