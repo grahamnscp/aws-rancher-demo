@@ -15,11 +15,6 @@ then
   echo Terraform failed, exiting..
 fi
 
-# long sleep for instances agent node instances to reboot and come back up
-Log "cluster3: sleeping to wait for instances to install drivers and reboot.."
-sleep 360
-LogElapsedDuration
-
 LogStarted "=====================================> Calling subscripts to install cluster3.."
 
 Log "===========================> cluster3: checking nvidia driver on agent nodes.."
