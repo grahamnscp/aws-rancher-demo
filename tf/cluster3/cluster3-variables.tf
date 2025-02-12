@@ -9,7 +9,7 @@
 # t3.2xlarge    8 vcpu - 32GB mem - $0.3341/hr
 variable "aws_instance_type_master_cluster3" {
   type = string
-  default     = "t3.xlarge"
+  default     = "t3.2xlarge"
 }
 variable "cluster3_master_count" {
   type = string
@@ -33,20 +33,20 @@ variable "aws_instance_type_agent_cluster3" {
 }
 variable "cluster3_agent_count" {
   type = string
-  default = "1"
+  default = "2"
 }
 
 # volumes
 variable "volume_size_cluster3" {
   type = string
-  default = "300"
+  default = "200"
 }
 variable "volume_size_second_disk_cluster3" {
   type = string
-  default = "200"
+  default = "400"
 }
 #variable "volume_size_third_disk_cluster3" {
 #  type = string
-#  default = "200"
+#  default = "400"
 #}
 

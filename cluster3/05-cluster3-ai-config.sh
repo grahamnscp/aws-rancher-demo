@@ -52,16 +52,82 @@ Log "\_Loading cert-manager CRDs on cluster3.."
 kubectl --kubeconfig=./local/admin-cluster3.conf apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.6.2/cert-manager.crds.yaml
 
 # ----------------------------
-# suse application collection auth
-
-# ----------------------------
-
 # Install suse ai components, db etc..
-#
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#suse-ai-deploy-suse-ai
 
+Log "\_Creating suse-ai namespace.."
+kubectl --kubeconfig=./local/admin-cluster3.conf create namespace suse-ai
+
+# suse application collection auth
+Log "\_Authenticating local helm cli to SUSE Application Collection registry.."
+helm registry login dp.apps.rancher.io/charts -u $APPCOL_USER -p $APPCOL_TOKEN
+
+Log "\_Creating a docker-registry secret for SUSE Application Collection.."
+kubectl --kubeconfig=./local/admin-cluster3.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n suse-ai
+
+# ----------------------------
 # milvus
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#milvus-installing
+
+Log "\_Installing milvus database.."
+
+Log " \_Creating milvus helm chart values.."
+cat << MVEOF >./local/cluster3-milvus-values.yaml
+global:
+  imagePullSecrets:
+  - application-collection
+cluster:
+  enabled: false
+standalone:
+  persistence:
+    persistentVolumeClaim:
+      storageClass: longhorn
+etcd:
+  replicaCount: 1
+  persistence:
+    storageClassName: longhorn
+minio:
+  mode: distributed
+  replicas: 4
+  rootUser: "admin"
+  rootPassword: "adminminio"
+  persistence:
+    storageClass: longhorn
+    size: 30Gi
+  resources:
+    requests:
+      memory: 1024Mi
+kafka:
+  enabled: true
+  name: kafka
+  replicaCount: 3
+  broker:
+    enabled: true
+  cluster:
+    listeners:
+      client:
+        protocol: 'PLAINTEXT'
+      controller:
+        protocol: 'PLAINTEXT'
+  persistence:
+    enabled: true
+    annotations: {}
+    labels: {}
+    existingClaim: ""
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: "longhorn"
+MVEOF
+
+Log " \_Installing milvus database.."
+helm upgrade --kubeconfig=./local/admin-cluster3.conf \
+  --install milvus oci://dp.apps.rancher.io/charts/milvus \
+  -n suse-ai \
+  -f ./local/cluster3-milvus-values.yaml \
+  --timeout=10m
 
 # ollama
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#ollama-installing

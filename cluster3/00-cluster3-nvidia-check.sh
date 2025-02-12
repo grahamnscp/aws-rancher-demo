@@ -24,11 +24,29 @@ function checkagentx
 # -------------------------------------------------------------------------------------
 # Main
 #
+Log "Checking cluster3 agent nodes ready.."
+Log "agents node count: $NUM_AGENTS"
 
-Log "Checking agent nodes.."
-for ((i=1; i<=$NUM_AGENTS; i++))
+for ((node=1; node<=$NUM_AGENTS; node++))
 do
-  checkagentx $i
+  ANODEIP=${AGENT_PUBLIC_IP[$node]}
+  ANODENAME=${AGENT_NAME[$node]}
+  ANODEN=$(echo $ANODENAME | cut -d. -f1)
+
+  Log "\_Checking $ANODEN is configured.."
+  while true
+  do
+    CONFIGRAN=`ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo ls -a /root/.suse-fb-config.ran 2>/dev/null | wc -l"`
+    if [ "$CONFIGRAN" != "1" ]
+    then
+      echo -n "."
+      sleep 10
+      continue
+    else
+      checkagentx $node
+    fi
+    break
+  done
 done
 
 LogCompleted "Done."

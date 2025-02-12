@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# clean local directory
+rm -rf ./local/*
+echo 1 > ./local/.keep
+
+# clean downstream cluster tf
+rm -rf ./tf/cluster1-*
+rm -rf ./tf/cluster2-*
+rm -rf ./tf/cluster3-*
+

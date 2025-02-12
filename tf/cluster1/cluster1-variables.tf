@@ -18,11 +18,11 @@ variable "cluster1_node_count" {
 }
 variable "volume_size_cluster1" {
   type = string
-  default = "300"
+  default = "200"
 }
 variable "volume_size_second_disk_cluster1" {
   type = string
-  default = "200"
+  default = "300"
 }
 # needed if using portworx
 #variable "volume_size_third_disk_cluster1" {
