@@ -9,12 +9,13 @@ SSH_OPTS="-o StrictHostKeyChecking=no -i $SSH_KEY"
 
 # rke2
 #RKE2_VERSION="v1.27.10+rke2r1"
-RKE2_VERSION="v1.28.12+rke2r1"
+#RKE2_VERSION="v1.28.12+rke2r1"
+RKE2_VERSION="v1.31.5+rke2r1"
 RKE2_TOKEN="myjointoken"
 
 # rancher
 # helm search repo rancher-prime --versions
-RANCHERVERSION="2.9.3"
+RANCHERVERSION="2.10.2"
 BOOTSTRAPADMINPWD=mybootistrapadminpwd
 RANCHERADMINPWD=myadminpwd
 
