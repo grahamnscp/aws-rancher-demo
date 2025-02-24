@@ -10,13 +10,13 @@ LogStarted "=====================================> Provisioning SUSE Observabili
 bash setup-observability.sh
 LogElapsedDuration
 
-#LogStarted "=====================================> Provisioning SUSE Security.."
-#bash setup-security.sh
-#LogElapsedDuration
-
-LogStarted "=====================================> Provisioning SUSE AI.."
-bash setup-ai.sh
+LogStarted "=====================================> Provisioning SUSE Security.."
+bash setup-security.sh
 LogElapsedDuration
+
+#LogStarted "=====================================> Provisioning SUSE AI.."
+#bash setup-ai.sh
+#LogElapsedDuration
 
 LogCompleted "Done."
 

@@ -36,6 +36,9 @@ Log "===========================> cluster1: post install configuring suse observ
 bash cluster1/05-cluster1-obs-config.sh
 LogElapsedDuration
 
+Log "===========================> configuring suse observability for the rancher local cluster.."
+bash cluster1/06-rancher-obs-config.sh
+
 # --------------------------------------
 LogElapsedDuration
 LogCompleted "Done."
