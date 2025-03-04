@@ -47,11 +47,34 @@ resource "aws_security_group" "cluster1-lb-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # open 8089
+  # open 8089 - cert-manager
   ingress {
     description = "All 8089"
     from_port = 8089
     to_port = 8089
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # open otel ports
+  ingress {
+    description = "All 8888"
+    from_port = 8888
+    to_port = 8888
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "All 4317"
+    from_port = 4317
+    to_port = 4317
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "All 4318"
+    from_port = 4318
+    to_port = 4318
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -89,7 +89,7 @@ etcd:
     storageClassName: longhorn
 minio:
   mode: distributed
-  replicas: 4
+  replicas: 2
   rootUser: "admin"
   rootPassword: "adminminio"
   persistence:
@@ -99,36 +99,16 @@ minio:
     requests:
       memory: 1024Mi
 kafka:
-  enabled: true
+  enabled: false
   name: kafka
-  replicaCount: 3
-  broker:
-    enabled: true
-  cluster:
-    listeners:
-      client:
-        protocol: 'PLAINTEXT'
-      controller:
-        protocol: 'PLAINTEXT'
-  persistence:
-    enabled: true
-    annotations: {}
-    labels: {}
-    existingClaim: ""
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 8Gi
-    storageClassName: "longhorn"
 MVEOF
 
-#Log " \_Installing milvus database.."
-#helm upgrade --kubeconfig=./local/admin-cluster3.conf \
-#  --install milvus oci://dp.apps.rancher.io/charts/milvus \
-#  -n suse-ai \
-#  -f ./local/cluster3-milvus-values.yaml \
-#  --timeout=10m
+Log " \_Installing milvus database.."
+helm upgrade --kubeconfig=./local/admin-cluster3.conf \
+  --install milvus oci://dp.apps.rancher.io/charts/milvus \
+  -n suse-ai \
+  -f ./local/cluster3-milvus-values.yaml \
+  --timeout=10m
 
 # ollama
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#ollama-installing

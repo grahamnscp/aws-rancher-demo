@@ -48,6 +48,25 @@ resource "aws_elb" "cluster1-elb" {
     instance_port = 7077
     instance_protocol = "tcp"
   }
+  # for suse-observability otel receivers
+  listener {
+    lb_port = 8888
+    lb_protocol = "tcp"
+    instance_port = 8888
+    instance_protocol = "tcp"
+  }
+  listener {
+    lb_port = 4317
+    lb_protocol = "tcp"
+    instance_port = 4317
+    instance_protocol = "tcp"
+  }
+  listener {
+    lb_port = 4318
+    lb_protocol = "tcp"
+    instance_port = 4318
+    instance_protocol = "tcp"
+  }
 
   health_check {
     healthy_threshold = 3
