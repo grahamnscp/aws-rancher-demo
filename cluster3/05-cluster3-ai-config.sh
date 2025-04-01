@@ -192,7 +192,7 @@ ingress:
   class: ""
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  host: suseai.demo.suselabs.net
+  host: ai.$DOMAINNAME
   tls: true
 extraEnvVars:
 - name: DEFAULT_MODELS
