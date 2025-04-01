@@ -10,6 +10,7 @@ LogStarted "Configuring cluster3.."
 
 # ----------------------------
 # deploy nvidia gpu-operator
+#  https://documentation.suse.com/suse-ai/1.0/html/NVIDIA-Operator-installation/index.html
 Log "\_Loading gpu-operator into cluster3.."
 cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
 apiVersion: helm.cattle.io/v1
@@ -47,11 +48,6 @@ do
 done
 
 # ----------------------------
-# install cert manager crds
-Log "\_Loading cert-manager CRDs on cluster3.."
-kubectl --kubeconfig=./local/admin-cluster3.conf apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.6.2/cert-manager.crds.yaml
-
-# ----------------------------
 # Install suse ai components, db etc..
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#suse-ai-deploy-suse-ai
 
@@ -64,6 +60,25 @@ helm registry login dp.apps.rancher.io/charts -u $APPCOL_USER -p $APPCOL_TOKEN
 
 Log "\_Creating a docker-registry secret for SUSE Application Collection.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n suse-ai
+
+# ----------------------------
+# install cert manager 
+#Log "\_Loading cert-manager CRDs on cluster3.."
+#kubectl --kubeconfig=./local/admin-cluster3.conf apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.6.2/cert-manager.crds.yaml
+
+Log "\_Creating cert-manager namespace.."
+kubectl --kubeconfig=./local/admin-cluster3.conf create namespace cert-manager
+
+Log "\_Creating application-collection secret for cert-manager.."
+kubectl --kubeconfig=./local/admin-cluster3.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n cert-manager
+
+Log "\_Installing cert-manager on cluster3.."
+helm upgrade --kubeconfig=./local/admin-cluster3.conf --install cert-manager \
+  oci://dp.apps.rancher.io/charts/cert-manager \
+  -n cert-manager \
+  --timeout=5m \
+  --set crds.enabled=true \
+  --set 'global.imagePullSecrets[0].name'=application-collection
 
 # ----------------------------
 # milvus
@@ -80,16 +95,20 @@ global:
 cluster:
   enabled: false
 standalone:
+  messageQueue: rocksmq
   persistence:
+    enabled: true
+    mountPath: "/var/lib/milvus"
     persistentVolumeClaim:
       storageClass: longhorn
+      size: 20Gi
 etcd:
   replicaCount: 1
   persistence:
     storageClassName: longhorn
 minio:
   mode: distributed
-  replicas: 2
+  replicas: 4
   rootUser: "admin"
   rootPassword: "adminminio"
   persistence:
@@ -108,18 +127,112 @@ helm upgrade --kubeconfig=./local/admin-cluster3.conf \
   --install milvus oci://dp.apps.rancher.io/charts/milvus \
   -n suse-ai \
   -f ./local/cluster3-milvus-values.yaml \
-  --timeout=10m
+  --timeout=5m
 
+Log " \_Waiting for deployment milvus-standalone rollout.."
+kubectl --kubeconfig=./local/admin-cluster3.conf \
+      rollout status -n suse-ai deployment milvus-standalone --timeout=300s
+
+# ----------------------------
 # ollama
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#ollama-installing
+#  https://github.com/otwld/ollama-helm/
 
+# ----------------------------
 # open webui
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#owui-installing
+#  https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html
+#  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#owui-helm-overrides
+#  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#owui-tls-sources
+
+Log "\_Installing open webui.."
+
+Log " \_Creating open webui helm chart values (embedded ollama).."
+cat << OWUIEOF >./local/cluster3-owui-values.yaml
+global:
+  imagePullSecrets:
+  - application-collection
+image:
+  registry: dp.apps.rancher.io
+  repository: containers/open-webui
+  tag: 0.3.32
+  pullPolicy: IfNotPresent
+ollamaUrls:
+- http://open-webui-ollama.suseai.svc.cluster.local:11434
+persistence:
+  enabled: true
+  storageClass: longhorn
+ollama:
+  enabled: true
+ image:
+    registry: dp.apps.rancher.io
+    repository: containers/ollama
+    tag: 0.3.6
+    pullPolicy: IfNotPresent
+  ingress:
+    enabled: false
+  defaultModel: "gemma:2b"
+  ollama:
+    models:
+      - "gemma:2b"
+      - "llama3.1"
+    gpu:
+      enabled: true
+      type: 'nvidia'
+      number: 1
+    persistentVolume:
+      enabled: true
+      storageClass: longhorn
+pipelines:
+  enabled: False
+  persistence:
+    storageClass: longhorn
+ingress:
+  enabled: true
+  class: ""
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  host: suseai.demo.suselabs.net
+  tls: true
+extraEnvVars:
+- name: DEFAULT_MODELS
+  value: "gemma:2b"
+- name: DEFAULT_USER_ROLE
+  value: "user"
+- name: WEBUI_NAME
+  value: "SUSE AI"
+- name: GLOBAL_LOG_LEVEL
+  value: INFO
+- name: RAG_EMBEDDING_MODEL
+  value: "sentence-transformers/all-MiniLM-L6-v2"
+- name: VECTOR_DB
+  value: "milvus"
+- name: MILVUS_URI
+  value: http://milvus.suseai.svc.cluster.local:19530
+OWUIEOF
+
+Log " \_Installing open webui.."
+helm upgrade --kubeconfig=./local/admin-cluster3.conf \
+  --install open-webui  oci://dp.apps.rancher.io/charts/owui \
+  -n suse-ai \
+  --version 3.3.2 \
+  -f ./local/cluster3-owui-values.yaml \
+  --timeout=10m
 
 
 # ----------------------------
 # post install:
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#suse-ai-deploy-post
+#
+#  1. Log in to SUSE AI Open WebUI using the default credentials.
+#  2. After you have logged in, update the administrator password for SUSE AI.
+#  3. From the available language models, configure the one you prefer. 
+#     Optionally, install a custom language model.
+#  4. Configure user management with role-base access control (RBAC) as described in 
+#     https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-managing-user-roles
+#  5. Integrate single sign-on authentication manager—such as Okta—with Open WebUI as described in 
+#     https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-authentication-via-okta.
+#  6. Configure retrieval-augmented generation (RAG) to let the model process content relevant to the customer.
 
 # --------------------------------------------------------------------
 

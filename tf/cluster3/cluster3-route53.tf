@@ -27,7 +27,7 @@ resource "aws_route53_record" "rke-cluster3" {
 }
 
 # cluster3 app elb alias
-resource "aws_route53_record" "ai" {
+resource "aws_route53_record" "suseai" {
   zone_id = "${var.route53_zone_id}"
   name = "ai.${var.route53_subdomain}.${var.route53_domain}"
   type = "A"
