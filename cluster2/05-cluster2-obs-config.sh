@@ -9,7 +9,7 @@ CLUSTER_NAME=cluster2
 
 LogStarted "Configuring SUSE Observability for $CLUSTER_NAME cluster.."
 
-Log "\__Provisioning kubernetes-v2 stackpack for rancher.."
+Log "\__Provisioning kubernetes-v2 stackpack for $CLUSTER_NAME.."
 STS_TOKEN=`cat ./local/sts-token.txt`
 curl -sk https://$OBS_HOSTNAME/api/stackpack/kubernetes-v2/provision \
      -X POST \
@@ -26,7 +26,7 @@ obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.y
 echo obs_api_key: $obs_api_key
 
 # install observability-agent - details via obs UI adding cluster with name $CLUSTER_NAME
-helm --kubeconfig=./local/admin.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
+helm --kubeconfig=./local/admin-$CLUSTER_NAME.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
      --namespace suse-observability --create-namespace \
      --set-string 'stackstate.apiKey'="$obs_api_key" \
      --set-string 'stackstate.cluster.name'="$CLUSTER_NAME" \
@@ -35,7 +35,7 @@ helm --kubeconfig=./local/admin.conf upgrade --install suse-observability-agent 
      --set-string 'global.skipSslValidation'=true
 
 Log "\__Waiting for suse-observability agent on $CLUSTER_NAME to be Ready.."
-kubectl --kubeconfig=./local/admin.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
+kubectl --kubeconfig=./local/admin-$CLUSTER_NAME.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

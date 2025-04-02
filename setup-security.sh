@@ -31,6 +31,9 @@ echo "${BWhi}*** Now install the neuvector helm chart via rancher UI ***${RCol}"
 # note: the UI NeuVector tab will not autheniicate is pre-installed via cli
 #bash cluster2/04-cluster2-suse-security.sh
 
+Log "===========================> cluster2: setup observability.."
+bash cluster2/05-cluster2-obs-config.sh
+
 # --------------------------------------
 LogElapsedDuration
 LogCompleted "Done."
