@@ -93,9 +93,9 @@ global:
   imagePullSecrets:
   - application-collection
 cluster:
-  enabled: false
+  enabled: true
 standalone:
-  messageQueue: rocksmq
+  messageQueue: kafka
   persistence:
     enabled: true
     mountPath: "/var/lib/milvus"
@@ -103,7 +103,7 @@ standalone:
       storageClass: longhorn
       size: 20Gi
 etcd:
-  replicaCount: 1
+  replicaCount: 3
   persistence:
     storageClassName: longhorn
 minio:
@@ -113,13 +113,20 @@ minio:
   rootPassword: "adminminio"
   persistence:
     storageClass: longhorn
-    size: 30Gi
+    size: 10Gi
   resources:
     requests:
       memory: 1024Mi
 kafka:
-  enabled: false
   name: kafka
+  enabled: true
+  persistence:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: longhorn
 MVEOF
 
 Log " \_Installing milvus database.."
@@ -131,7 +138,9 @@ helm upgrade --kubeconfig=./local/admin-cluster3.conf \
 
 Log " \_Waiting for deployment milvus-standalone rollout.."
 kubectl --kubeconfig=./local/admin-cluster3.conf \
-      rollout status -n suse-ai deployment milvus-standalone --timeout=300s
+        wait pods -n suse-ai \
+        -l app.kubernetes.io/instance=milvus --for condition=Ready \
+        --timeout=300s
 
 # ----------------------------
 # ollama

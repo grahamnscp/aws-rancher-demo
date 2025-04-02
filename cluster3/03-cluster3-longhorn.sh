@@ -104,7 +104,20 @@ function helminstalllonghorn
   # helm install longhorn
   helm repo add longhorn https://charts.longhorn.io
   helm repo update
-  helm --kubeconfig=./local/admin-cluster3.conf install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace 
+
+  Log " \_Creating longhorn helm chart values.."
+  cat << LEOF >./local/longhorn-values.yaml
+persistence:
+  defaultClass: true
+  defaultFsType: xfs
+LEOF
+
+  Log " \_Installing longhorn helm chart.."
+  helm upgrade --kubeconfig=./local/admin-cluster3.conf \
+  --install longhorn longhorn/longhorn \
+  --namespace longhorn-system \
+  -f ./local/longhorn-values.yaml \
+  --timeout=5m
 }
 
 
