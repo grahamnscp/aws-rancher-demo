@@ -14,9 +14,9 @@ LogStarted "=====================================> Provisioning SUSE Security.."
 bash setup-security.sh
 LogElapsedDuration
 
-#LogStarted "=====================================> Provisioning SUSE AI.."
-#bash setup-ai.sh
-#LogElapsedDuration
+LogStarted "=====================================> Provisioning SUSE AI.."
+bash setup-ai.sh
+LogElapsedDuration
 
 LogCompleted "Done."
 

@@ -13,11 +13,16 @@ TOKEN_READY=false
 while ! $TOKEN_READY
 do
   ./utils/so-token-fetcher --url https://$OBS_HOSTNAME --username admin --password $OBS_ADMIN_PWD -auth-type default -o ./local/sts-token.txt
-  STS_TOKEN=`cat ./local/sts-token.txt`
-  if [ "$STS_TOKEN" == "" ]; then
+  if [ ! -f ./local/sts-token.txt ]; then
+    R402=`./utils/so-token-fetcher --url https://$OBS_HOSTNAME --username admin --password $OBS_ADMIN_PWD -auth-type default -o ./local/sts-token.txt 2>&1 | wc -l |  sed 's/^ *//g'`
+    echo "R402: '$R402'"
+    if [ "$R402" == "1" ]; then
+      LogError "so-token-fetcher received return code 402 - Observability License Key has probably expired!"
+    fi
     sleep 30
   else
     TOKEN_READY=true
+    STS_TOKEN=`cat ./local/sts-token.txt`
   fi
 done
 echo sts-token: $STS_TOKEN
