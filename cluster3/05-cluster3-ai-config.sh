@@ -63,8 +63,6 @@ kubectl --kubeconfig=./local/admin-cluster3.conf create secret docker-registry a
 
 # ----------------------------
 # install cert manager 
-#Log "\_Loading cert-manager CRDs on cluster3.."
-#kubectl --kubeconfig=./local/admin-cluster3.conf apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.6.2/cert-manager.crds.yaml
 
 Log "\_Creating cert-manager namespace.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create namespace cert-manager
@@ -173,11 +171,12 @@ persistence:
   storageClass: longhorn
 ollama:
   enabled: true
- image:
+  image:
     registry: dp.apps.rancher.io
     repository: containers/ollama
     tag: 0.3.6
     pullPolicy: IfNotPresent
+  imagePullSecrets: application-collection
   ingress:
     enabled: false
   defaultModel: "gemma:2b"
@@ -193,7 +192,7 @@ ollama:
       enabled: true
       storageClass: longhorn
 pipelines:
-  enabled: False
+  enabled: false
   persistence:
     storageClass: longhorn
 ingress:
@@ -201,7 +200,7 @@ ingress:
   class: ""
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  host: ai.$DOMAINNAME
+  host: $AI_HOSTNAME
   tls: true
 extraEnvVars:
 - name: DEFAULT_MODELS
@@ -217,12 +216,12 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "milvus"
 - name: MILVUS_URI
-  value: http://milvus.suseai.svc.cluster.local:19530
+  value: http://milvus.suse-ai.svc.cluster.local:19530
 OWUIEOF
 
 Log " \_Installing open webui.."
 helm upgrade --kubeconfig=./local/admin-cluster3.conf \
-  --install open-webui  oci://dp.apps.rancher.io/charts/owui \
+  --install open-webui  oci://dp.apps.rancher.io/charts/open-webui \
   -n suse-ai \
   --version 3.3.2 \
   -f ./local/cluster3-owui-values.yaml \
