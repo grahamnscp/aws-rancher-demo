@@ -37,13 +37,18 @@ bash cluster3/03-cluster3-longhorn.sh
 LogElapsedDuration
 
 # deploy observability receiver on ai cluster (opentelemetry?)
-Log "===========================> cluster3: deploying observability agent for cluster3.."
-bash cluster3/04-cluster3-obs-agent.sh
+Log "===========================> cluster3: deploying ai observability for cluster3.."
+bash cluster3/04-cluster3-ai-obs.sh
 LogElapsedDuration
 
 # cluster config for suse ai
 Log "===========================> cluster3: configuring cluster for suse ai.."
 bash cluster3/05-cluster3-ai-config.sh
+LogElapsedDuration
+
+# deploy suse-ai components
+Log "===========================> cluster3: deploying suse ai.."
+bash cluster3/06-cluster3-ai-install.sh
 LogElapsedDuration
 
 # --------------------------------------

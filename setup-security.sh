@@ -27,9 +27,9 @@ bash cluster2/03-cluster2-suse-security-pre.sh
 
 Log "===========================> cluster2: install suse-security.."
 # Can demo neuvector install to cluster2 or uncomment to pre-install
-echo "${BWhi}*** Now install the neuvector helm chart via rancher UI ***${RCol}"
+#echo "${BWhi}*** Now install the neuvector helm chart via rancher UI ***${RCol}"
 # note: the UI NeuVector tab will not autheniicate is pre-installed via cli
-#bash cluster2/04-cluster2-suse-security.sh
+bash cluster2/04-cluster2-suse-security.sh
 
 Log "===========================> cluster2: setup observability.."
 bash cluster2/05-cluster2-obs-config.sh

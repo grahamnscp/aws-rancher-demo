@@ -22,13 +22,12 @@ echo
 sleep 120
 
 Log "\__Installing suse-observability agent on $CLUSTER_NAME.."
-obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml  | grep --color=never key | head -1 | awk '{print $2}' | sed 's/\"//g'`
-echo obs_api_key: $obs_api_key
+OBS_API_KEY=`cat ./local/obs-apikey.txt`
 
 # install observability-agent - details via obs UI adding cluster with name $CLUSTER_NAME
 helm --kubeconfig=./local/admin.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
      --namespace suse-observability --create-namespace \
-     --set-string 'stackstate.apiKey'="$obs_api_key" \
+     --set-string 'stackstate.apiKey'="$OBS_API_KEY" \
      --set-string 'stackstate.cluster.name'="$CLUSTER_NAME" \
      --set-string 'stackstate.url'="https://$OBS_HOSTNAME/receiver/stsAgent" \
      --set 'nodeAgent.skipKubeletTLSVerify'=true \

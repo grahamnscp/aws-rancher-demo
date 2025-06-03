@@ -1,7 +1,8 @@
 #!/usr/bin/bash
 
 zypper refresh
-zypper install -y git bind-utils mlocate lvm2 jq nfs-client cryptsetup open-iscsi
+zypper --non-interactive install -y git bind-utils mlocate lvm2 jq nfs-client cryptsetup open-iscsi
+#zypper install -y git bind-utils mlocate lvm2 jq nfs-client cryptsetup open-iscsi
 
 echo "alias l='ls -latFrh'" >> /home/ec2-user/.bashrc
 echo "alias vi=vim"         >> /home/ec2-user/.bashrc

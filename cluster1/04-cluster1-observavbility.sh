@@ -34,7 +34,7 @@ function gensuseobservabilityvalues
     --set adminPassword="$OBS_ADMIN_PWD" \
     --set sizing.profile="trial" 
 
-    # Add some basic http ingress for testing  as SUSE Obs needs a real certificate
+    # Add some basic http ingress for testing as SUSE Obs needs a real certificate
     cat << EOF >./local/suse-observability-values/templates/ingress_values.yaml
 ---
 # SUSE Observability ingress helm chart values
@@ -51,6 +51,41 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - stackstate.local
+opentelemetry:
+  enabled: true
+opentelemetry-collector:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+      nginx.ingress.kubernetes.io/backend-protocol: GRPC
+      cert-manager.io/cluster-issuer: selfsigned-issuer
+    hosts:
+      - host: otlp-$OBS_HOSTNAME
+        paths:
+          - path: /
+            pathType: Prefix
+            port: 4317
+    tls:
+      - hosts:
+          - otlp-$OBS_HOSTNAME
+        secretName: otlp-tls-secret
+    additionalIngresses:
+      - name: otlp-http
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+          cert-manager.io/cluster-issuer: selfsigned-issuer
+        hosts:
+          - host: otlp-http-$OBS_HOSTNAME
+            paths:
+              - path: /
+                pathType: Prefix
+                port: 4318
+        tls:
+          - hosts:
+              - otlp-http-$OBS_HOSTNAME
+            secretName: otlp-http-tls-secret 
 ---
 EOF
 
@@ -68,6 +103,41 @@ stackstate:
 EOF
 
 }
+
+
+#
+function installcertmanager
+{
+  Log "function installcertmanager:"
+
+  kubectl --kubeconfig=./local/admin-cluster1.conf create namespace cert-manager
+
+  kubectl --kubeconfig=./local/admin-cluster1.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n cert-manager
+
+  helm upgrade --kubeconfig=./local/admin-cluster1.conf --install cert-manager \
+    oci://dp.apps.rancher.io/charts/cert-manager \
+    -n cert-manager \
+    --timeout=5m \
+    --set crds.enabled=true \
+    --set 'global.imagePullSecrets[0].name'=application-collection
+
+  kubectl wait pods -n cert-manager -l app.kubernetes.io/instance=cert-manager --for condition=Ready
+
+  # issuer
+  cat << EOF >./local/cluster1-selfsigned-issuer.yaml 
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}
+---
+EOF
+
+  kubectl --kubeconfig=./local/admin-cluster1.conf apply -f ./local/cluster1-selfsigned-issuer.yaml
+  kubectl --kubeconfig=./local/admin-cluster1.conf wait --for=condition=Ready clusterissuer --all --timeout=300s
+}
+
 
 #
 function installsuseobservability
@@ -94,6 +164,10 @@ LogStarted "Installing SUSE Observability to cluster1.."
 #installngnixingress
 
 # ----------------------------------------
+Log "\__Installing cert-manager on cluster.."
+installcertmanager
+
+# ----------------------------------------
 Log "\__Generating suse-observability helm template values.."
 gensuseobservabilityvalues
 
@@ -108,6 +182,14 @@ kubectl --kubeconfig=./local/admin-cluster1.conf wait pods -n suse-observability
 # sometimes drops through above and needs a little bit more time
 Log "\__sleeping for 1 minute.."
 sleep 60
+
+
+# -------------------------------------------------------------------------------------
+# Obtain Obs API-KEY from baseConfig_valuses
+
+OBS_API_KEY=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml  | grep --color=never key | head -1 | awk '{print $2}' | sed 's/\"//g'`
+echo $OBS_API_KEY > ./local/obs-apikey.txt
+echo OBS_API_KEY: $OBS_API_KEY
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

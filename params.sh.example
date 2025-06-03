@@ -8,13 +8,14 @@ SSH_KEY=/Users/myuser/.ssh/awsmyuser
 SSH_OPTS="-o StrictHostKeyChecking=no -i $SSH_KEY"
 
 # rke2
-#RKE2_VERSION="v1.27.10+rke2r1"
-#RKE2_VERSION="v1.28.12+rke2r1"
-RKE2_VERSION="v1.31.5+rke2r1"
+# https://github.com/rancher/rke2/releases
 RKE2_TOKEN="myjointoken"
+RKE2_VERSION="v1.31.8+rke2r1"
+RKE2_VERSION_AI="v1.31.5+rke2r1"
 
 # rancher
 # helm search repo rancher-prime --versions
+# https://ranchermanager.docs.rancher.com/versions
 RANCHERVERSION="2.10.2"
 BOOTSTRAPADMINPWD=mybootistrapadminpwd
 RANCHERADMINPWD=myadminpwd
@@ -32,6 +33,8 @@ OBS_SERVICE_TOKEN=mytokenvalue
 # SUSE Security
 SEC_HOSTNAME=sec.domainname
 SEC_ADMIN_PWD=mysusesecurityadminpwd
+# helm search repo neuvector --versions
+SEC_NV_APP_VERSION=5.4.4
 
 # SUSE Application Collection
 APPCOL_USER="my@emaildomain.com"

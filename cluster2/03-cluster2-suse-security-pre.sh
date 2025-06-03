@@ -62,9 +62,6 @@ LogStarted "\__Creating cattle-neuvector-system namespace on cluster2.."
 kubectl --kubeconfig=./local/admin-cluster2.conf create namespace cattle-neuvector-system
 kubectl --kubeconfig=./local/admin-cluster2.conf label namespace cattle-neuvector-system "pod-security.kubernetes.io/enforce=privileged"
 
-
-#echo "${BWhi}*** Now install neuvector helm chart via rancher UI ***${RCol}"
-
 # -------------------------------------------------------------------------------------
 LogElapsedDuration
 LogCompleted "Done."

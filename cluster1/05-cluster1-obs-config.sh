@@ -41,14 +41,14 @@ current-context: default
 EOF
 
 # ----------------------------------------
+OBS_CLUSTER_NAME=cluster1
 
 Log "\__Provisioning kubernetes-v2 stackpack.."
-CLUSTER_NAME=cluster1
 curl -sk https://$OBS_HOSTNAME/api/stackpack/kubernetes-v2/provision \
      -X POST \
      -H "Content-Type: application/json" \
      -H "Authorization: ApiToken $STS_TOKEN" \
-     -d "{\"kubernetes_cluster_name\": \"$CLUSTER_NAME\"}"
+     -d "{\"kubernetes_cluster_name\": \"$OBS_CLUSTER_NAME\"}"
 echo
 
 Log "\__Provisioning open-telemetry stackpack.."
@@ -67,7 +67,7 @@ curl -sk https://$OBS_HOSTNAME/api/stackpack/aad-v2/provision \
      -d '{}'
 echo
 
-# ----------------------------------------
+# -------------------------------------------------------------------------------------
 # Add local receiver agent on observability cluster
 
 # pause for stackpacks to deploy fully
@@ -89,21 +89,60 @@ do
   fi
 done
 
-Log "\__Installing suse-observability agent on cluster1.."
-obs_api_key=`cat ./local/suse-observability-values/templates/baseConfig_values.yaml  | grep --color=never key | head -1 | awk '{print $2}' | sed 's/\"//g'`
-echo obs_api_key: $obs_api_key
+# ----------------------------------------
+Log "\_Installing suse-observability agent on cluster1.."
+OBS_API_KEY=`cat ./local/obs-apikey.txt`
 
 # install observability-agent - details via obs UI adding cluster with name 'cluster1'
 helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
      --namespace suse-observability --create-namespace \
-     --set-string 'stackstate.apiKey'="$obs_api_key" \
-     --set-string 'stackstate.cluster.name'='cluster1' \
+     --set-string 'stackstate.apiKey'="$OBS_API_KEY" \
+     --set-string 'stackstate.cluster.name'="$OBS_CLUSTER_NAME" \
      --set-string 'stackstate.url'="https://$OBS_HOSTNAME/receiver/stsAgent" \
      --set 'nodeAgent.skipKubeletTLSVerify'=true \
      --set-string 'global.skipSslValidation'=true
 
 Log "\__Waiting for suse-observability agent on cluster1 to be Ready.."
 kubectl --kubeconfig=./local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
+
+
+# -------------------------------------------------------------------------------------
+# Install the SUSE AI Observability Extension from the SUSE Application Collection
+
+Log "\_Install SUSE Observability extension for SUSE AI.."
+
+Log "\__Creating so-extensions namespace.."
+kubectl --kubeconfig=./local/admin-cluster1.conf create namespace so-extensions
+
+Log "\__Authenticating local helm cli to SUSE Application Collection registry.."
+helm registry login dp.apps.rancher.io/charts -u $APPCOL_USER -p $APPCOL_TOKEN
+
+Log "\__Creating a docker-registry secret for SUSE Application Collection.."
+kubectl --kubeconfig=./local/admin-cluster1.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n so-extensions 
+
+Log "\__Creating ai-obs extension helm chart values.."
+#SUSE_OBSERVABILITY_API_URL="https://$OBS_HOSTNAME"
+# local connection as using self-signed cert for suse obsevability
+SUSE_OBSERVABILITY_API_URL="http://obs-suse-observability-router.suse-observability.svc.cluster.local:8080"
+SUSE_OBSERVABILITY_API_KEY="$OBS_API_KEY"
+SUSE_OBSERVABILITY_API_CLI_TOKEN="$STS_TOKEN"
+OBSERVED_SERVER_NAME=cluster3
+cat << AIOBSEOF >./local/cluster1-aiobs-values.yaml
+global:
+  imagePullSecrets:
+  - application-collection 
+serverUrl: $SUSE_OBSERVABILITY_API_URL
+apiKey: $SUSE_OBSERVABILITY_API_KEY
+apiToken: $SUSE_OBSERVABILITY_API_CLI_TOKEN
+clusterName: $OBSERVED_SERVER_NAME
+AIOBSEOF
+
+Log "\__Installing ai-obs helm chart on cluster1.."
+helm upgrade --kubeconfig=./local/admin-cluster1.conf --install ai-obs \
+  oci://dp.apps.rancher.io/charts/suse-ai-observability-extension \
+  -n so-extensions \
+  --timeout=5m \
+  -f ./local/cluster1-aiobs-values.yaml
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

@@ -14,7 +14,7 @@ echo "syntax on"            >> /root/.vimrc
 
 # repos and packages
 zypper refresh
-zypper --non-interactive install git bind-utils mlocate lvm2 jq nfs-client cryptsetup open-iscsi
+zypper --non-interactive install -y git bind-utils mlocate lvm2 jq nfs-client cryptsetup open-iscsi
 
 # enable for longhorn
 systemctl enable iscsid --now
@@ -36,6 +36,12 @@ touch /root/.suse-fb-config.started
 cat /proc/driver/nvidia/version
 ln -s /sbin/ldconfig /sbin/ldconfig.real
 
+zypper --non-interactive install -y git bind-utils mlocate lvm2 jq nfs-client cryptsetup open-iscsi
+
+# enable for longhorn
+systemctl enable iscsid --now
+
+#
 touch /root/.suse-fb-config.ran
 
 echo "suse-fb-config.sh done"

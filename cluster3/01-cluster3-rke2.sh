@@ -35,7 +35,7 @@ EOF
   ssh $SSH_OPTS ${SSH_USERNAME}@${NODEIP} "sudo cp config.yaml /etc/rancher/rke2/"
 
   Log "\__Installing RKE2 ($NODENAME).."
-  ssh $SSH_OPTS ${SSH_USERNAME}@${NODEIP} "sudo bash -c 'curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION=${RKE2_VERSION} sh - 2>&1 > /root/rke2-install.log 2>&1'"
+  ssh $SSH_OPTS ${SSH_USERNAME}@${NODEIP} "sudo bash -c 'curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION=${RKE2_VERSION_AI} sh - 2>&1 > /root/rke2-install.log 2>&1'"
   ssh $SSH_OPTS ${SSH_USERNAME}@${NODEIP} "sudo systemctl enable rke2-server.service"
   Log "\__Starting rke2-server.service.."
   ssh $SSH_OPTS ${SSH_USERNAME}@${NODEIP} "sudo systemctl start rke2-server.service"
@@ -112,7 +112,7 @@ EOF
   ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo cp config.yaml /etc/rancher/rke2/"
 
   Log "\__Installing RKE2 (node$NODENUM).."
-  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo bash -c 'curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION=${RKE2_VERSION} sh - 2>&1 > /root/rke2-install.log 2>&1'"
+  ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo bash -c 'curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION=${RKE2_VERSION_AI} sh - 2>&1 > /root/rke2-install.log 2>&1'"
   ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo systemctl enable rke2-server.service"
   Log "\__Starting rke2-server.service.."
   ssh $SSH_OPTS ${SSH_USERNAME}@${ANODEIP} "sudo systemctl start rke2-server.service"
@@ -143,7 +143,7 @@ EOF
   ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo cp config.yaml /etc/rancher/rke2/"
 
   Log "\__RKE2 join agent$AGENTNUM ($AAGENTN).."
-  ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo bash -c 'curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION=${RKE2_VERSION} INSTALL_RKE2_TYPE=\"agent\" sh - 2>&1 > /root/rke2-install.log 2>&1'"
+  ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo bash -c 'curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION=${RKE2_VERSION_AI} INSTALL_RKE2_TYPE=\"agent\" sh - 2>&1 > /root/rke2-install.log 2>&1'"
 
   Log "\__Starting rke2-agent.service.."
   ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo systemctl enable rke2-agent.service"
@@ -228,7 +228,7 @@ LogElapsedDuration
 rke2nodewait 3 ${NODE_PUBLIC_IP[3]}
 LogElapsedDuration
 
-----
+# ----
 echo
 Log "Installing RKE2 agent nodes.."
 for ((i=1; i<=$NUM_AGENTS; i++))

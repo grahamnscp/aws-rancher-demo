@@ -129,7 +129,7 @@ controller:
   image:
     hash: null
     repository: rancher/mirrored-neuvector-controller
-    tag: 5.4.1
+    tag: $SEC_NV_APP_VERSION
   ingress:
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: HTTPS
@@ -293,7 +293,7 @@ enforcer:
   image:
     hash: null
     repository: rancher/mirrored-neuvector-enforcer
-    tag: 5.4.1
+    tag: $SEC_NV_APP_VERSION
   internal:
     certificate:
       caFile: ca.crt
@@ -339,7 +339,7 @@ manager:
   image:
     hash: null
     repository: rancher/mirrored-neuvector-manager
-    tag: 5.4.1
+    tag: $SEC_NV_APP_VERSION
   ingress:
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: HTTPS
@@ -378,7 +378,7 @@ registry: docker.io
 resources: {}
 runtimePath: null
 serviceAccount: neuvector
-tag: 5.4.1
+tag: $SEC_NV_APP_VERSION
 EOF
 }
 
@@ -387,8 +387,11 @@ function installsusesecurity
 {
   helm --kubeconfig=./local/admin-cluster2.conf upgrade --install neuvector neuvector/core \
        --namespace cattle-neuvector-system \
-       -f ./local/suse-security-values-rancher.yaml
+       --set tag=$SEC_NV_APP_VERSION \
+       -f ./local/suse-security-values-base.yaml
+#       -f ./local/suse-security-values-rancher.yaml
 
+  Log "\__Waiting for neuvector deployment to complete.."
   kubectl --kubeconfig=./local/admin-cluster2.conf wait pods -n cattle-neuvector-system -l app=neuvector-manager-pod --for condition=Ready --timeout=180s
   kubectl --kubeconfig=./local/admin-cluster2.conf wait pods -n cattle-neuvector-system -l app=neuvector-controller-pod --for condition=Ready
   kubectl --kubeconfig=./local/admin-cluster2.conf wait pods -n cattle-neuvector-system -l app=neuvector-enforcer-pod --for condition=Ready

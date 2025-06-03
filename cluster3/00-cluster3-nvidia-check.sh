@@ -24,7 +24,7 @@ function checkagentx
 # -------------------------------------------------------------------------------------
 # Main
 #
-Log "Checking cluster3 agent nodes ready.."
+Log "Checking cluster3 agent nodes ready (looping until instance up).."
 Log "agents node count: $NUM_AGENTS"
 
 for ((node=1; node<=$NUM_AGENTS; node++))

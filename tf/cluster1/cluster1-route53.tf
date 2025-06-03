@@ -18,10 +18,30 @@ resource "aws_route53_record" "rke-cluster1" {
   records = [aws_route53_record.cluster1.0.name]
 }
 
-# observability elb
+# observability elbs
 resource "aws_route53_record" "obs" {
   zone_id = "${var.route53_zone_id}"
   name = "obs.${var.route53_subdomain}.${var.route53_domain}"
+  type = "A"
+  alias {
+    name = "${aws_elb.cluster1-elb.dns_name}"
+    zone_id = "${aws_elb.cluster1-elb.zone_id}"
+    evaluate_target_health = false
+  }
+}
+resource "aws_route53_record" "obs-oltp" {
+  zone_id = "${var.route53_zone_id}"
+  name = "oltp-obs.${var.route53_subdomain}.${var.route53_domain}"
+  type = "A"
+  alias {
+    name = "${aws_elb.cluster1-elb.dns_name}"
+    zone_id = "${aws_elb.cluster1-elb.zone_id}"
+    evaluate_target_health = false
+  }
+}
+resource "aws_route53_record" "obs-oltp-http" {
+  zone_id = "${var.route53_zone_id}"
+  name = "oltp-http-obs.${var.route53_subdomain}.${var.route53_domain}"
   type = "A"
   alias {
     name = "${aws_elb.cluster1-elb.dns_name}"
