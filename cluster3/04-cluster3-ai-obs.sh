@@ -40,29 +40,116 @@ kubectl --kubeconfig=./local/admin-cluster3.conf wait pods -n suse-observability
 
 
 # -------------------------------------------------------------------------------------
-# OpenTel setup on AI cluster
+# OpenTelelemetry setup on AI cluster
 
 Log "\_Configure OpenTelemetry Collector.."
 
 Log "\__Creating observability namespace.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create namespace observability
 
-Log "\__Creating SUSE Observability API_KEY secret.."
+# Add custom rbac for opentelemetry-collector
+Log "\__Creating rbac for opentelemetry-collector serviceAccount.."
+cat << RBACEOF >./local/cluster3-otel-rbac.yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: suse-observability-otel-scraper
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - namespaces
+  - namespaces/status
+  - nodes
+  - nodes/spec
+  - pods
+  - pods/status
+  - replicationcontrollers
+  - replicationcontrollers/status
+  - resourcequotas
+  - services
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+    - autoscaling
+  resources:
+    - horizontalpodautoscalers
+  verbs:
+    - get
+    - list
+    - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: suse-observability-otel-scraper
+  labels:
+    app: opentelemetry-collector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: suse-observability-otel-scraper
+subjects:
+- kind: ServiceAccount
+  name: opentelemetry-collector
+  namespace: observability
+---
+RBACEOF
+kubectl --kubeconfig=./local/admin-cluster3.conf apply -f local/cluster3-otel-rbac.yaml
+
+Log "\__Creating open-telemetry-collector API_KEY secret.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create secret generic open-telemetry-collector --namespace observability --from-literal=API_KEY="$OBS_API_KEY"
 
 Log "\__Authenticating local helm cli to SUSE Application Collection registry.."
 helm registry login dp.apps.rancher.io/charts -u $APPCOL_USER -p $APPCOL_TOKEN
 
-Log "\__Creating a docker-registry secret for SUSE Application Collection.."
+Log "\__Creating docker-registry application-collection secret.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n observability
 
 cat << OTELVEOF >./local/cluster3-otel-values.yaml
 global:
   imagePullSecrets:
   - application-collection
+
 extraEnvsFrom:
   - secretRef:
       name: open-telemetry-collector
+
 mode: deployment
 ports:
   metrics:
@@ -71,6 +158,7 @@ presets:
   kubernetesAttributes:
     enabled: true
     extractAllPodLabels: true
+
 config:
   receivers:
     prometheus:
@@ -84,14 +172,40 @@ config:
               namespaces:
                 names:
                 - gpu-operator
+
+  extensions:
+    # Use the API key from the env for authentication
+    bearertokenauth:
+      scheme: SUSEObservability
+      token: "\${env:API_KEY}"
+
   exporters:
-    otlp:
-      endpoint: https://oltp-${OBS_HOSTNAME}:4317
-      headers:
-        Authorization: "SUSEObservability \${env:API_KEY}"
+    nop: {}
+    otlp/suse-observability:
+      auth:
+        authenticator: bearertokenauth
+      endpoint: https://otlp-${OBS_HOSTNAME}:4317
+      compression: snappy
       tls:
         insecure: true
+
   processors:
+    memory_limiter:
+      check_interval: 5s
+      limit_percentage: 80
+      spike_limit_percentage: 25
+    batch: {}
+    resource:
+      attributes:
+      - key: k8s.cluster.name
+        action: upsert
+        value: $AI_CLUSTER_NAME
+      - key: service.instance.id
+        from_attribute: k8s.pod.uid
+        action: insert
+      - key: service.namespace
+        from_attribute: k8s.namespace.name
+        action: insert
     tail_sampling:
       decision_wait: 10s
       policies:
@@ -118,14 +232,6 @@ config:
             percent: 33
           - policy: rest
             percent: 34
-    resource:
-      attributes:
-      - key: k8s.cluster.name
-        action: upsert
-        value: $AI_CLUSTER_NAME
-      - key: service.instance.id
-        from_attribute: k8s.pod.uid
-        action: insert
     filter/dropMissingK8sAttributes:
       error_mode: ignore
       traces:
@@ -134,6 +240,7 @@ config:
           - resource.attributes["k8s.pod.uid"] == nil
           - resource.attributes["k8s.namespace.name"] == nil
           - resource.attributes["k8s.pod.name"] == nil
+
   connectors:
     spanmetrics:
       metrics_expiration: 5m
@@ -143,14 +250,14 @@ config:
       table:
       - statement: route()
         pipelines: [traces/sampling, traces/spanmetrics]
+
   service:
-    extensions:
-      - health_check
+    extensions: [ health_check,  bearertokenauth ]
     pipelines:
       traces:
         receivers: [otlp, jaeger]
         processors: [filter/dropMissingK8sAttributes, memory_limiter, resource]
-        exporters: [routing/traces]
+        exporters: [debug, spanmetrics, routing/traces, otlp/suse-observability]
       traces/spanmetrics:
         receivers: [routing/traces]
         processors: []
@@ -158,11 +265,19 @@ config:
       traces/sampling:
         receivers: [routing/traces]
         processors: [tail_sampling, batch]
-        exporters: [debug, otlp]
+        exporters: [debug, otlp/suse-observability]
       metrics:
         receivers: [otlp, spanmetrics, prometheus]
         processors: [memory_limiter, resource, batch]
-        exporters: [debug, otlp]
+        exporters: [debug, otlp/suse-observability]
+      logs:
+        receivers: [otlp]
+        processors: []
+        exporters: [nop]
+
+serviceAccount:
+  name: opentelemetry-collector
+  create: false
 OTELVEOF
 
 Log "\__Installing opentelemetry-collector helm chart on $AI_CLUSTER_NAME.."
@@ -171,64 +286,6 @@ helm upgrade --kubeconfig=./local/admin-cluster3.conf --install opentelemetry-co
   -n observability \
   -f ./local/cluster3-otel-values.yaml
 
-
-# ----------------------------
-# Add custom rbac for opentelemetry-collector
-
-Log "\_Loading gpu-operator rbac for opentelemetry-collector into cluster3.."
-
-cat <<RBACEOF | kubectl --kubeconfig=./local/admin-cluster3.conf apply -f -  > /dev/null 2>&1
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: suse-observability-otel-scraper
-  namespace: observability
-rules:
-  - apiGroups: [""]
-    resources: ["namespaces", "services", "endpoints"]
-    verbs: ["get", "watch", "list"]
-  - apiGroups: ["apps"]
-    resources: ["replicasets"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["extensions"]
-    resources: ["replicasets"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["events", "namespaces", "namespaces/status", "nodes", "nodes/spec", "pods", "pods/status", "replicationcontrollers", "replicationcontrollers/status", "resourcequotas", "services" ]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["apps"]
-    resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["extensions"]
-    resources: ["daemonsets", "deployments", "replicasets"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["batch"]
-    resources: ["jobs", "cronjobs"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["autoscaling"]
-    resources: ["horizontalpodautoscalers"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["nodes/stats"]
-    verbs: ["get", "watch", "list"]
-  - apiGroups: ["events.k8s.io"]
-    resources: ["events"]
-    verbs: ["watch", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: suse-observability-otel-scraper
-subjects:
-  - kind: ServiceAccount
-    name: opentelemetry-collector
-    namespace: observability
-roleRef:
-  kind: Role
-  name: suse-observability-otel-scraper
-  apiGroup: rbac.authorization.k8s.io
-RBACEOF
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

@@ -17,7 +17,8 @@ function checkagentx
   AAGENTNAME=${AGENT_NAME[$AGENTNUM]}
   AAGENTN=$(echo $AAGENTNAME | cut -d. -f1)
 
-  ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo lsmod | grep nvidia"
+  ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo dmesg | egrep 'nvidia|nouveau'"
+  ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo lsmod | egrep 'nvidia|nouveau'"
   ssh $SSH_OPTS ${SSH_USERNAME}@${AAGENTIP} "sudo nvidia-smi"
 }
 

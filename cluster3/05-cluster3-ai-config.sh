@@ -27,6 +27,7 @@ done
 
 #TODO!: the gpu-operator currently breaks the container runtime on the gpu agent nodes
 #       work on toml config values to find a combination that works
+# https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/troubleshooting.html
 
 Log "\_Deploying gpu-operator into cluster3.."
 
@@ -37,7 +38,7 @@ Log "\__Place custom /var/lib/rancher/rke2/agent/etc/containerd/config.toml.tmpl
 #SystemdCgroup=true .
 #TOMLTEOF
 cat << TOMLTEOF > ./local/custom-config.toml
-SystemdCgroup=true .
+SystemdCgroup=true
 TOMLTEOF
 
 # copy custom config.toml.tmpl to agent hosts
@@ -66,7 +67,7 @@ toolkit:
   - name: CONTAINERD_RUNTIME_CLASS
     value: nvidia
   - name: CONTAINERD_SET_AS_DEFAULT
-    value: "true"
+    value: "false"
 GOPEOF
 
 Log "\__Adding nvidia helm repo.."

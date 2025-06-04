@@ -11,7 +11,7 @@ bash setup-observability.sh
 LogElapsedDuration
 
 LogStarted "=====================================> Provisioning SUSE Security.."
-bash setup-security.sh
+#bash setup-security.sh
 LogElapsedDuration
 
 LogStarted "=====================================> Provisioning SUSE AI.."
