@@ -7,7 +7,7 @@ source cluster3/load-tf-output-cluster3.sh
 export KUBECONFIG=./local/admin-cluster3.conf
 
 # --------------------------------------------------------------------
-LogStarted "Configuring cluster3.."
+LogStarted "Configuring cluster3 ready for SUSE AI deployment.."
 
 # ----------------------------
 # label agent nodes with GPU
@@ -24,19 +24,12 @@ done
 # ----------------------------
 # deploy nvidia gpu-operator
 #  https://documentation.suse.com/suse-ai/1.0/html/NVIDIA-Operator-installation/index.html
-
-#TODO!: the gpu-operator currently breaks the container runtime on the gpu agent nodes
-#       work on toml config values to find a combination that works
-# https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/troubleshooting.html
+#  https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/troubleshooting.html
 
 Log "\_Deploying gpu-operator into cluster3.."
 
 Log "\__Place custom /var/lib/rancher/rke2/agent/etc/containerd/config.toml.tmpl file on agent hosts.."
 # create custom config.toml file
-#cat << TOMLTEOF > ./local/custom-config.toml
-#{{ template "base" . }}
-#SystemdCgroup=true .
-#TOMLTEOF
 cat << TOMLTEOF > ./local/custom-config.toml
 SystemdCgroup=true
 TOMLTEOF

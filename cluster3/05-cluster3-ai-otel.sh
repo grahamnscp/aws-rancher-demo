@@ -8,7 +8,7 @@ source ./utils/utils.sh
 
 AI_CLUSTER_NAME=cluster3
 
-Log "\_Configure OpenTelemetry Collector.."
+LogStarted "\_Configure OpenTelemetry Collector on $AI_CLUSTER_NAME.."
 
 Log "\__Creating observability namespace.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create namespace observability
@@ -98,6 +98,7 @@ subjects:
 RBACEOF
 kubectl --kubeconfig=./local/admin-cluster3.conf apply -f local/cluster3-otel-rbac.yaml
 
+OBS_API_KEY=`cat ./local/obs-apikey.txt`
 
 Log "\__Creating open-telemetry-collector API_KEY secret.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create secret generic open-telemetry-collector --namespace observability --from-literal=API_KEY="$OBS_API_KEY"
@@ -138,24 +139,25 @@ config:
     # Use the API key from the env for authentication
     bearertokenauth:
       scheme: SUSEObservability
-      token: "\${env:API_KEY}"
+      token: \${env:API_KEY}
 
   exporters:
     nop: {}
     otlp/suse-observability:
       auth:
         authenticator: bearertokenauth
-      endpoint: https://otlp-${OBS_HOSTNAME}:4317
+      endpoint: http://otlp-${OBS_HOSTNAME}:4317
       compression: snappy
       tls:
-        insecure_skip_verify: true
+        #insecure_skip_verify: true
+        insecure: true
     otlphttp/suse-observability:
       auth:
         authenticator: bearertokenauth
-      endpoint: https://otlp-http-${OBS_HOSTNAME}:4318
+      endpoint: http://otlp-http-${OBS_HOSTNAME}:4318
       compression: snappy
       tls:
-        insecure_skip_verify: true
+        insecure: true
 
   processors:
     batch: {}
@@ -218,10 +220,6 @@ config:
       table:
       - statement: route()
         pipelines: [traces/sampling, traces/spanmetrics]
-    memory_limiter:
-      check_interval: 5s
-      limit_percentage: 80
-      spike_limit_percentage: 25
 
   service:
     extensions: [ health_check,  bearertokenauth ]
@@ -229,7 +227,7 @@ config:
       traces:
         receivers: [otlp, jaeger]
         processors: [filter/dropMissingK8sAttributes, memory_limiter, resource]
-        exporters: [debug, spanmetrics, routing/traces, otlp/suse-observability]
+        exporters: [debug, spanmetrics, routing/traces, otlphttp/suse-observability]
       traces/spanmetrics:
         receivers: [routing/traces]
         processors: []
@@ -237,11 +235,11 @@ config:
       traces/sampling:
         receivers: [routing/traces]
         processors: [tail_sampling, batch]
-        exporters: [debug, otlp/suse-observability]
+        exporters: [debug, otlphttp/suse-observability]
       metrics:
         receivers: [otlp, spanmetrics, prometheus]
         processors: [memory_limiter, resource, batch]
-        exporters: [debug, otlp/suse-observability]
+        exporters: [debug, otlphttp/suse-observability]
       logs:
         receivers: [otlp]
         processors: []

@@ -43,7 +43,7 @@ LogElapsedDuration
 
 # deploy observability opentelemetry  on ai cluster
 Log "===========================> cluster3: deploying opentelemetry for cluster3.."
-bash cluster3/04-cluster3-ai-otel.sh
+bash cluster3/05-cluster3-ai-otel.sh
 LogElapsedDuration
 
 # cluster config for suse ai

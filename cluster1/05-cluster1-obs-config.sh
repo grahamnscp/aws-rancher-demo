@@ -120,13 +120,15 @@ helm registry login dp.apps.rancher.io/charts -u $APPCOL_USER -p $APPCOL_TOKEN
 Log "\__Creating a docker-registry secret for SUSE Application Collection.."
 kubectl --kubeconfig=./local/admin-cluster1.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n so-extensions 
 
-Log "\__Creating ai-obs extension helm chart values.."
+
+AI_CLUSTER_NAME=cluster3
+Log "\__Creating ai-obs extension helm chart values (Observed cluster is $AI_CLUSTER_NAME).."
 #SUSE_OBSERVABILITY_API_URL="https://$OBS_HOSTNAME"
-# local connection as using self-signed cert for suse obsevability
+# local connection as using self-signed cert for suse obsevability external ingress
 SUSE_OBSERVABILITY_API_URL="http://obs-suse-observability-router.suse-observability.svc.cluster.local:8080"
 SUSE_OBSERVABILITY_API_KEY="$OBS_API_KEY"
 SUSE_OBSERVABILITY_API_CLI_TOKEN="$STS_TOKEN"
-OBSERVED_SERVER_NAME=cluster3
+OBSERVED_SERVER_NAME="$AI_CLUSTER_NAME"
 cat << AIOBSEOF >./local/cluster1-aiobs-values.yaml
 global:
   imagePullSecrets:
@@ -137,12 +139,18 @@ apiToken: $SUSE_OBSERVABILITY_API_CLI_TOKEN
 clusterName: $OBSERVED_SERVER_NAME
 AIOBSEOF
 
-Log "\__Installing ai-obs helm chart on cluster1.."
+Log "\__Installing ai-obs helm chart on cluster1 (Observed cluster named $AI_CLUSTER_NAME).."
 helm upgrade --kubeconfig=./local/admin-cluster1.conf --install ai-obs \
   oci://dp.apps.rancher.io/charts/suse-ai-observability-extension \
   -n so-extensions \
   --timeout=5m \
   -f ./local/cluster1-aiobs-values.yaml
+
+#
+echo "${BWhi}**************************************"
+echo "SUSE Observability is running at:"
+echo "open https://$OBS_HOSTNAME"
+echo "**************************************${RCol}"
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

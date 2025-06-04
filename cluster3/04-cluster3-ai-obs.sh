@@ -4,10 +4,14 @@ source ./params.sh
 source ./utils/utils.sh
 
 # -------------------------------------------------------------------------------------
-Log "\_Provisioning kubernetes-v2 stackpack for cluster3.."
 
 AI_CLUSTER_NAME=cluster3
 STS_TOKEN=`cat ./local/sts-token.txt`
+
+LogStarted "Configuring $AI_CLUSTER_NAME for SUSE Observability.."
+
+# -------------------------------------------------------------------------------------
+Log "\_Provisioning kubernetes-v2 stackpack for $AI_CLUSTER_NAME on Observability cluster.."
 
 curl -sk https://$OBS_HOSTNAME/api/stackpack/kubernetes-v2/provision \
      -X POST \

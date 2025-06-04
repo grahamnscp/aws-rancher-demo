@@ -83,17 +83,17 @@ function gensuseobservabilityvalues
 # SUSE Observability ingress helm chart values
 ingress:
   annotations: {
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: nginx,
+    cert-manager.io/cluster-issuer: selfsigned-issuer
   }
   enabled: true
   path: /
   hosts:
     - host: $OBS_HOSTNAME
-  # ingress.tls -- List of ingress TLS certificates to use.
   tls:
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - stackstate.local
+    - secretName: suse-obs-tls-secret
+      hosts:
+        - $OBS_HOSTNAME
 EOF
 
     # Add values for opentelemetry
@@ -127,32 +127,29 @@ opentelemetry-collector:
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: "50m"
       nginx.ingress.kubernetes.io/backend-protocol: GRPC
-      cert-manager.io/cluster-issuer: selfsigned-issuer
+      #cert-manager.io/cluster-issuer: selfsigned-issuer
     hosts:
       - host: otlp-$OBS_HOSTNAME
         paths:
           - path: /
             pathType: Prefix
             port: 4317
-    tls:
-      - hosts:
-          - otlp-$OBS_HOSTNAME
-        secretName: otlp-tls-secret
+    #tls:
+      #- hosts:
+      #    - otlp-$OBS_HOSTNAME
+      #  secretName: otlp-tls-secret
+
     additionalIngresses:
       - name: otlp-http
         annotations:
           nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-          cert-manager.io/cluster-issuer: selfsigned-issuer
         hosts:
           - host: otlp-http-$OBS_HOSTNAME
             paths:
               - path: /
                 pathType: Prefix
                 port: 4318
-        tls:
-          - hosts:
-              - otlp-http-$OBS_HOSTNAME
-            secretName: otlp-http-tls-secret 
+        #tls:
 ---
 OTEOF
 
