@@ -142,16 +142,17 @@ ollama:
     enabled: false
   defaultModel: "gemma:2b"
   ollama:
-    models:
-      - "gemma:2b"
-      - "llama3.1"
     gpu:
       enabled: true
       type: 'nvidia'
       number: 1
+    models:
+      - "gemma:2b"
+      - "llama3.1"
     persistentVolume:
       enabled: true
       storageClass: longhorn
+runtimeClassName: nvidia
 pipelines:
   enabled: false
   persistence:
