@@ -41,6 +41,12 @@ zypper --non-interactive install -y git bind-utils mlocate lvm2 jq nfs-client cr
 # enable for longhorn
 systemctl enable iscsid --now
 
+# Tuning
+# Environment: promtail on amd64 EC2
+echo "fs.inotify.max_user_instances = 1024" | tee -a /etc/sysctl.conf
+sysctl -p
+sysctl fs.inotify
+
 #
 touch /root/.suse-fb-config.ran
 
