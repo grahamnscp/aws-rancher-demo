@@ -143,7 +143,7 @@ config:
 
   exporters:
     nop: {}
-    otlpgrpc/suse-observability:
+    otlp/suse-observability:
       auth:
         authenticator: bearertokenauth
       endpoint: https://otlp-grpc-${OBS_HOSTNAME}:433
