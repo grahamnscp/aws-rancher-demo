@@ -143,10 +143,10 @@ config:
 
   exporters:
     nop: {}
-    otlp/suse-observability:
+    otlpgrpc/suse-observability:
       auth:
         authenticator: bearertokenauth
-      endpoint: http://otlp-${OBS_HOSTNAME}:4317
+      endpoint: https://otlp-grpc-${OBS_HOSTNAME}:433
       compression: snappy
       tls:
         #insecure_skip_verify: true
@@ -154,7 +154,7 @@ config:
     otlphttp/suse-observability:
       auth:
         authenticator: bearertokenauth
-      endpoint: http://otlp-http-${OBS_HOSTNAME}:4318
+      endpoint: http://otlp-http-${OBS_HOSTNAME}:80
       compression: snappy
       tls:
         insecure: true

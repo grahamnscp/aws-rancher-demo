@@ -121,35 +121,36 @@ opentelemetry-collector:
         scheme: SUSEObservability
         token: "\${env:API_KEY}"
 
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-      nginx.ingress.kubernetes.io/backend-protocol: GRPC
-      #cert-manager.io/cluster-issuer: selfsigned-issuer
-    hosts:
-      - host: otlp-$OBS_HOSTNAME
-        paths:
-          - path: /
-            pathType: Prefix
-            port: 4317
-    #tls:
-      #- hosts:
-      #    - otlp-$OBS_HOSTNAME
-      #  secretName: otlp-tls-secret
-
-    additionalIngresses:
-      - name: otlp-http
-        annotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-        hosts:
-          - host: otlp-http-$OBS_HOSTNAME
-            paths:
-              - path: /
-                pathType: Prefix
-                port: 4318
-        #tls:
+# NOTE: Adding otlp ingress later
+#  ingress:
+#    enabled: true
+#    ingressClassName: nginx
+#    annotations:
+#      nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+#      nginx.ingress.kubernetes.io/backend-protocol: GRPC
+#      #cert-manager.io/cluster-issuer: selfsigned-issuer
+#    hosts:
+#      - host: otlp-grpc-$OBS_HOSTNAME
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            port: 4317
+#    tls:
+#      - hosts:
+#        - otlp-$OBS_HOSTNAME
+#        secretName: otlp-tls-secret
+#
+#    additionalIngresses:
+#      - name: otlp-http
+#        annotations:
+#          nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+#        hosts:
+#          - host: otlp-http-$OBS_HOSTNAME
+#            paths:
+#              - path: /
+#                pathType: Prefix
+#                port: 4318
+#        #tls:
 ---
 OTEOF
 

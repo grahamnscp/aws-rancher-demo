@@ -40,6 +40,71 @@ contexts:
 current-context: default
 EOF
 
+
+# ----------------------------------------
+# deploy ingress for opentelemetry
+Log "\_Creating otlp ingress.."
+
+cat << INGEOF >./local/otlp-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otlp-grpc-ingress
+  namespace: suse-observability
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    cert-manager.io/cluster-issuer: selfsigned-issuer
+spec:
+  rules:
+  - host: otlp-grpc-$OBS_HOSTNAME
+    http:
+      paths:
+      - backend:
+          service:
+            name: suse-observability-otel-collector
+            port:
+              number: 4317
+        path: /
+        pathType: Prefix
+  tls:
+    - hosts:
+      - otlp-grpc-$OBS_HOSTNAME
+      secretName: otlp-tls-secret
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otlp-http-ingress
+  namespace: suse-observability
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  rules:
+  - host: otlp-http-$OBS_HOSTNAME
+    http:
+      paths:
+      - backend:
+          service:
+            name: suse-observability-otel-collector
+            port:
+              number: 4318
+        path: /
+        pathType: Prefix
+---
+INGEOF
+
+kubectl --kubeconfig=./local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
+
+echo
+echo "${BWhi}**************************************"
+echo "SUSE Observability OTLP Listening at:"
+echo "  https://otlp-grpc-$OBS_HOSTNAME:443"
+echo "  http://otlp-http-$OBS_HOSTNAME:80"
+echo "**************************************${RCol}"
+echo
+
 # ----------------------------------------
 OBS_CLUSTER_NAME=cluster1
 

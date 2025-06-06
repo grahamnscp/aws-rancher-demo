@@ -29,9 +29,9 @@ resource "aws_route53_record" "obs" {
     evaluate_target_health = false
   }
 }
-resource "aws_route53_record" "obs-otlp" {
+resource "aws_route53_record" "obs-otlp-grpc" {
   zone_id = "${var.route53_zone_id}"
-  name = "otlp-obs.${var.route53_subdomain}.${var.route53_domain}"
+  name = "otlp-grpc-obs.${var.route53_subdomain}.${var.route53_domain}"
   type = "A"
   alias {
     name = "${aws_elb.cluster1-elb.dns_name}"
