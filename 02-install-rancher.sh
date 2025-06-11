@@ -14,7 +14,7 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 Log "\__helm install cert-manager jetstack/cert-manager .."
-helm install cert-manager jetstack/cert-manager \
+helm install --kubeconfig=./local/admin.conf cert-manager jetstack/cert-manager \
         --namespace cert-manager --create-namespace \
         --set crds.enabled=true
 
@@ -32,7 +32,8 @@ helm repo update
 
 Log "\__helm install rancher (version=${RANCHERVERSION}).."
 #helm install rancher rancher-latest/rancher --namespace cattle-system --create-namespace \
-helm install rancher rancher-prime/rancher --namespace cattle-system --create-namespace \
+helm install --kubeconfig=./local/admin.conf rancher rancher-prime/rancher \
+        --namespace cattle-system --create-namespace \
         --version=${RANCHERVERSION} \
         --set hostname=rancher.$DOMAINNAME \
         --set bootstrapPassword=${BOOTSTRAPADMINPWD} \
@@ -41,6 +42,9 @@ helm install rancher rancher-prime/rancher --namespace cattle-system --create-na
 
 # wait until cluster fully up
 Log "\__Waiting for Rancher Manager to be fully initialised.."
+
+kubectl --kubeconfig=./local/admin.conf -n cattle-system rollout status deploy/rancher
+
 sleep 30
 READY=false
 while ! $READY
