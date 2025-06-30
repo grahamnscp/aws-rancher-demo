@@ -140,6 +140,7 @@ ollama:
   imagePullSecrets: application-collection
   ingress:
     enabled: false
+  runtimeClassName: nvidia
   defaultModel: "gemma:2b"
   ollama:
     gpu:
@@ -152,7 +153,6 @@ ollama:
     persistentVolume:
       enabled: true
       storageClass: longhorn
-runtimeClassName: nvidia
 pipelines:
   enabled: false
   persistence:

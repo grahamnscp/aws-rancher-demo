@@ -194,6 +194,9 @@ function rke2nodewait
       sleep 10
     fi
   done
+
+  # Add nvidia to path
+  echo PATH=$PATH:/usr/local/nvidia/toolkit >> /etc/default/rke2-agent
 }
 
 # -------------------------------------------------------------------------------------

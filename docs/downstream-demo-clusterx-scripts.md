@@ -19,6 +19,9 @@ The downstream clusters are all installed as freestanding RKE2 clusters and then
 The downstream scripts are designed to be called from the top-level directory, ex ./cluster1/load-tf-output-cluster1.sh  
 There are wrapper scripts to install all cluster subscripts, setup-xyx, run setup-rancher first, if looking to install suse ai this sends data to suse observability so run setup-observability before setup-ai etc
 
+## Clusters Overview
+![clusters-overview-diagram](./assets/clusters-overview-diagram.png)
+
 ## Notes
 * they all need local kubectl and helm commands on your client system (laptop, desktop etc)
 * cluster1, cluster2, cluster3 all use the rancher cli, so have that pre-installed on your client system
