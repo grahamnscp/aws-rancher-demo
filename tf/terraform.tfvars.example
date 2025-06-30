@@ -30,7 +30,9 @@ aws_instance_type_ran = "t3.xlarge"
 # sles sp4 ami (amazon/suse-sles-15-sp4-v20221216-hvm-ssd-x86_64)
 #aws_ami = "ami-0c544bda9765444c2"
 # sles sp6 ami (amazon/suse-sles-15-sp6-v20241113-hvm-ssd-x86_64)
-aws_ami = "ami-0d9f9dbae7b9a241d"
+#aws_ami = "ami-0d9f9dbae7b9a241d"
+# sles sp7 ami (suse-sles-15-sp7-v20250619-hvm-ssd-x86_64)
+aws_ami = "ami-06528c11a66cef7a8"
 
 # Number of rancher instances
 ran_node_count = "3"
