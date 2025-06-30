@@ -20,7 +20,7 @@ The downstream scripts are designed to be called from the top-level directory, e
 There are wrapper scripts to install all cluster subscripts, setup-xyx, run setup-rancher first, if looking to install suse ai this sends data to suse observability so run setup-observability before setup-ai etc
 
 ## Clusters Overview
-![clusters-overview-diagram](./assets/clusters-overview-diagram.png)
+![clusters-overview-diagram](../assets/clusters-overview-diagram.png)
 
 ## Notes
 * they all need local kubectl and helm commands on your client system (laptop, desktop etc)
