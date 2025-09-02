@@ -9,7 +9,7 @@ export KUBECONFIG=./local/admin.conf
 LogStarted "Installing Rancher Manager.."
 
 
-Log "\__Add helm repo jeystack (for cert-manager).."
+Log "\__Add helm repo jetstack (for cert-manager).."
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
