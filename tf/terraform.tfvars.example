@@ -26,7 +26,9 @@ route53_subdomain = "test"
 aws_instance_type_ran = "t3.xlarge"
 
 # AWS EC2 ami
-# Active images: https://pint.suse.com/?resource=images&search=sles-15-sp6&csp=amazon&region=us-east-1&state=active
+# Active images: 
+#  https://pint.suse.com/?resource=images&search=sles-15-sp7&csp=amazon&region=us-east-1&state=active
+#  aws ec2 describe-images --filters "Name=name,Values=suse-sles-15-sp7-v2026*" "Name=name,Values=*x86_64" --region us-east-1 --query "Images[0].{Name:Name,ImageId:ImageId}"
 # sles sp4 ami (amazon/suse-sles-15-sp4-v20221216-hvm-ssd-x86_64)
 #aws_ami = "ami-0c544bda9765444c2"
 # sles sp6 ami (amazon/suse-sles-15-sp6-v20241113-hvm-ssd-x86_64)
