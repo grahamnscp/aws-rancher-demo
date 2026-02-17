@@ -9,7 +9,7 @@ terraform apply -auto-approve
 cd ..
 
 Log "sleeping to wait for instances to initialise.."
-sleep 10
+sleep 20
 LogElapsedDuration
 
 LogStarted "=====================================> Calling subscripts to install rancher manager.."

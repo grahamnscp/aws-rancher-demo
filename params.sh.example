@@ -10,13 +10,13 @@ SSH_OPTS="-o StrictHostKeyChecking=no -i $SSH_KEY"
 # rke2
 # https://github.com/rancher/rke2/releases
 RKE2_TOKEN="myjointoken"
-RKE2_VERSION="v1.31.8+rke2r1"
-RKE2_VERSION_AI="v1.31.5+rke2r1"
+RKE2_VERSION="v1.32.9+rke2r1"
+RKE2_VERSION_AI="v1.32.9+rke2r1"
 
 # rancher
 # helm search repo rancher-prime --versions
 # https://ranchermanager.docs.rancher.com/versions
-RANCHERVERSION="2.10.2"
+RANCHERVERSION="2.13.2"
 BOOTSTRAPADMINPWD=mybootistrapadminpwd
 RANCHERADMINPWD=myadminpwd
 
