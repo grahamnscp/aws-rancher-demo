@@ -6,17 +6,17 @@ LogStarted "=====================================> Provisioning Rancher.."
 bash setup-rancher.sh
 LogElapsedDuration
 
-LogStarted "=====================================> Provisioning SUSE Observability.."
-bash setup-observability.sh
-LogElapsedDuration
+#LogStarted "=====================================> Provisioning SUSE Observability.."
+#bash setup-observability.sh
+#LogElapsedDuration
 
-LogStarted "=====================================> Provisioning SUSE Security.."
+#LogStarted "=====================================> Provisioning SUSE Security.."
 #bash setup-security.sh
-LogElapsedDuration
+#LogElapsedDuration
 
-LogStarted "=====================================> Provisioning SUSE AI.."
-bash setup-ai.sh
-LogElapsedDuration
+#LogStarted "=====================================> Provisioning SUSE AI.."
+#bash setup-ai.sh
+#LogElapsedDuration
 
 LogCompleted "Done."
 
