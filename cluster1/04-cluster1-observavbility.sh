@@ -36,7 +36,8 @@ function installcertmanager
     -n cert-manager \
     --timeout=5m \
     --set crds.enabled=true \
-    --set 'global.imagePullSecrets[0].name'=application-collection
+    --set global.imagePullSecrets={application-collection}
+#    --set 'global.imagePullSecrets[0].name'=application-collection
 
   Log "\___Waiting for cert-manager resources to be ready.."
   kubectl wait pods -n cert-manager -l app.kubernetes.io/instance=cert-manager --for condition=Ready

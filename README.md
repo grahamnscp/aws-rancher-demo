@@ -172,7 +172,7 @@ cluster1-ran2.demo.suselabs.net 44.206.173.186 172.20.1.155
 cluster1-ran3.demo.suselabs.net 34.227.34.172 172.20.1.150
 
 [2024-08-20 11:35:37 STARTED] Installing Rancher Manager..
-[2024-08-20 11:35:37 INFO] \__Add helm repo jeystack (for cert-manager)..
+[2024-08-20 11:35:37 INFO] \__Add helm repo jetstack (for cert-manager)..
 "jetstack" already exists with the same configuration, skipping
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "rancher-prime" chart repository

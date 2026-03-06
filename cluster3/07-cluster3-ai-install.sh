@@ -37,7 +37,8 @@ helm upgrade --kubeconfig=./local/admin-cluster3.conf --install cert-manager \
   -n cert-manager \
   --timeout=5m \
   --set crds.enabled=true \
-  --set 'global.imagePullSecrets[0].name'=application-collection
+  --set global.imagePullSecrets={application-collection}
+#  --set 'global.imagePullSecrets[0].name'=application-collection
 
 # ----------------------------
 # milvus
@@ -115,6 +116,9 @@ kubectl --kubeconfig=./local/admin-cluster3.conf \
 
 Log "\_Installing open webui.."
 
+###############################################################################
+# NOTE! this is out of date, needs later chart and obs pipelines adding etc.. #
+###############################################################################
 Log " \_Creating open webui helm chart values (embedded ollama).."
 cat << OWUIEOF >./local/cluster3-owui-values.yaml
 global:
