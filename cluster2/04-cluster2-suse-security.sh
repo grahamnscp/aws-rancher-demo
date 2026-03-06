@@ -385,6 +385,8 @@ EOF
 #
 function installsusesecurity
 {
+  helm repo add neuvector https://neuvector.github.io/neuvector-helm/
+  helm repo update
   helm --kubeconfig=./local/admin-cluster2.conf upgrade --install neuvector neuvector/core \
        --namespace cattle-neuvector-system \
        --set tag=$SEC_NV_APP_VERSION \
