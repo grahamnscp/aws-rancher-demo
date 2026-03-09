@@ -95,18 +95,8 @@ spec:
 ---
 INGEOF
 
-kubectl --kubeconfig=./local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
-
-echo
-echo "${BWhi}**************************************"
-echo "SUSE Observability OTLP Listening at:"
-echo "  https://otlp-grpc-$OBS_HOSTNAME:443"
-echo "  http://otlp-http-$OBS_HOSTNAME:80"
-echo "**************************************${RCol}"
-echo
-
 # ----------------------------------------
-OBS_CLUSTER_NAME=cluster1
+OBS_CLUSTER_NAME=obs
 
 Log "\__Provisioning kubernetes-v2 stackpack.."
 curl -sk https://$OBS_HOSTNAME/api/stackpack/kubernetes-v2/provision \
@@ -170,7 +160,6 @@ helm --kubeconfig=./local/admin-cluster1.conf upgrade --install suse-observabili
 Log "\__Waiting for suse-observability agent on cluster1 to be Ready.."
 kubectl --kubeconfig=./local/admin-cluster1.conf wait pods -n suse-observability -l app.kubernetes.io/instance=suse-observability-agent --for condition=Ready --timeout=300s
 
-
 # -------------------------------------------------------------------------------------
 # Install the SUSE AI Observability Extension from the SUSE Application Collection
 
@@ -186,7 +175,9 @@ Log "\__Creating a docker-registry secret for SUSE Application Collection.."
 kubectl --kubeconfig=./local/admin-cluster1.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n so-extensions 
 
 
-AI_CLUSTER_NAME=cluster3
+# Name for SUSE AI cluster (cluster3) in SUSE Obs
+AI_CLUSTER_NAME=ai
+
 Log "\__Creating ai-obs extension helm chart values (Observed cluster is $AI_CLUSTER_NAME).."
 #SUSE_OBSERVABILITY_API_URL="https://$OBS_HOSTNAME"
 # local connection as using self-signed cert for suse obsevability external ingress
@@ -212,10 +203,16 @@ helm upgrade --kubeconfig=./local/admin-cluster1.conf --install ai-obs \
   -f ./local/cluster1-aiobs-values.yaml
 
 #
+echo
 echo "${BWhi}**************************************"
-echo "SUSE Observability is running at:"
+echo "SUSE Observability OTLP urls:"
+echo "  https://otlp-grpc-$OBS_HOSTNAME:443"
+echo "  http://otlp-http-$OBS_HOSTNAME:80"
+echo
+echo "SUSE Observability console:"
 echo "open https://$OBS_HOSTNAME"
 echo "**************************************${RCol}"
+echo
 
 # -------------------------------------------------------------------------------------
 LogElapsedDuration

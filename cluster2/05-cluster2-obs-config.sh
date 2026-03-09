@@ -5,7 +5,8 @@ source ./utils/utils.sh
 
 # -------------------------------------------------------------------------------------
 
-SEC_CLUSTER_NAME=cluster2
+# Name for SUSE Security (cluster2) in SUSE Obs
+SEC_CLUSTER_NAME=sec
 
 LogStarted "Configuring SUSE Observability for $SEC_CLUSTER_NAME cluster.."
 

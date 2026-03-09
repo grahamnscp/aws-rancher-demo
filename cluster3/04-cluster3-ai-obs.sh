@@ -5,7 +5,8 @@ source ./utils/utils.sh
 
 # -------------------------------------------------------------------------------------
 
-AI_CLUSTER_NAME=cluster3
+# Name for SUSE AI cluster in SUSE Obs
+AI_CLUSTER_NAME=ai
 STS_TOKEN=`cat ./local/sts-token.txt`
 
 LogStarted "Configuring $AI_CLUSTER_NAME for SUSE Observability.."

@@ -5,6 +5,7 @@ source ./utils/utils.sh
 
 # -------------------------------------------------------------------------------------
 
+# Name for rancher manager cluster in SUSE Obs
 CLUSTER_NAME=rancher
 
 LogStarted "Configuring SUSE Observability for $CLUSTER_NAME cluster.."

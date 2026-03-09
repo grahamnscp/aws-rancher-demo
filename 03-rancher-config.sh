@@ -9,7 +9,7 @@ RANCHER_SERVER=rancher.$DOMAINNAME
 
 LogStarted "Rancher Manager Config.."
 
-LogStarted "\__Checking Rancher Server is UP.."
+LogStarted "\__Waiting for Rancher Server to be available (typically route53 delay).."
 while true 
 do 
   curl -kv https://$RANCHER_SERVER 2>&1 | grep -q "dynamiclistener-ca" 
@@ -55,14 +55,14 @@ curl -sk "https://$RANCHER_SERVER/v3/settings/server-url" \
      -H "Authorization: Bearer $api_token" \
      -d "{\"name\":\"server-url\",\"value\":\"https://$RANCHER_SERVER\"}"
 
-# telemery opt-out setting
-Log "\__Configure Telemetry Opt-out"
-curl -sk "https://$RANCHER_SERVER/v3/settings/telemetry-opt" \
-     -X PUT \
-     -H 'content-type: application/json' \
-     -H 'accept: application/json' \
-     -H "Authorization: Bearer $api_token" \
-     -d '{"value":"out"}'
+# telemery opt-out setting (removed)
+#Log "\__Configure Telemetry Opt-out"
+#curl -sk "https://$RANCHER_SERVER/v3/settings/telemetry-opt" \
+#     -X PUT \
+#     -H 'content-type: application/json' \
+#     -H 'accept: application/json' \
+#     -H "Authorization: Bearer $api_token" \
+#     -d '{"value":"out"}'
 
 Log "\__Overriding min password length.."
 cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
@@ -81,6 +81,29 @@ curl -sk "https://$RANCHER_SERVER/v3/users?action=changepassword" \
     -H 'content-type: application/json' \
     -H "Authorization: Bearer $api_token" \
     -d "{\"currentPassword\":\"$BOOTSTRAPADMINPWD\",\"newPassword\":\"$RANCHERADMINPWD\"}"
+
+# add rancher extension repositories
+Log "\__Adding Rancher Extensions Repositories.."
+# Rancher Extensions repo
+cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: rancher-ui-plugins
+spec:
+  gitRepo: https://github.com/rancher/ui-plugin-charts
+  gitBranch: main
+EOF
+# Partner Extensions repo
+cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: partner-extensions
+spec:
+  gitRepo: https://github.com/rancher/partner-extensions
+  gitBranch: main
+EOF
 
 #
 echo "${BWhi}**************************************"

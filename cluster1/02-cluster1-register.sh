@@ -46,7 +46,7 @@ rancher cluster ls
 
 # define a cluster of provider type Imported
 Log "\__Defining downstream cluster1 in Rancher via rancher cli.."
-rancher cluster create cluster1 --import
+rancher cluster create obs --import
 
 sleep 5
 
@@ -54,10 +54,10 @@ Log "\__Query clusters using rancher cli.."
 echo rancher clusters:
 rancher cluster ls
 
-Log "\__Registring cluster1 with Rancher.."
+Log "\__Registring cluster1 (obs) with Rancher.."
 Log " \__Obtaining registration command for cluster1.."
 # output downstream import command
-curlcmd=$(rancher cluster import cluster1 | grep --color=never curl)
+curlcmd=$(rancher cluster import obs | grep --color=never curl)
 echo import curl command: $curlcmd
 importcmd=`echo $curlcmd | sed 's/kubectl/kubectl --kubeconfig=.\/local\/admin-cluster1.conf/'`
 echo downstream cluster import command:
