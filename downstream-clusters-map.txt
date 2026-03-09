@@ -1,0 +1,3 @@
+cluster1 == SUSE Onservability
+cluster2 == SUSE Security
+cluster3 == SUSE AI
