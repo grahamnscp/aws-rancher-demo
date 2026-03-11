@@ -26,14 +26,15 @@ Log "\__Downloading Rancher ca cert.."
 curl --insecure -s  https://$RANCHER_SERVER/cacerts > ./local/rancher_cacert.pem
 
 # list clusters
-#kubectl get clusters.provisioning.cattle.io --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+#kubectl --kubeconfig=./local/admin.conf get clusters.provisioning.cattle.io --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
 
 # obtain local cluster project for rancher cli context
 Log "\__Obtaining Rancher local cluster details for rancher cli login context.."
-localns=$(kubectl get projects.management.cattle.io -n local -o=jsonpath='{.items[?(@.spec.displayName=="Default")].metadata.name}')
+localns=$(kubectl --kubeconfig=./local/admin.conf get projects.management.cattle.io -n local -o=jsonpath='{.items[?(@.spec.displayName=="Default")].metadata.name}')
 echo cluster: local project is: $localns
 
 # rancher cli login
+KUBECONFIG=/Users/grahamh/lab/aws-rancher-demo/local/admin.conf
 Log "\__Authenticating rancher cli.."
 rancher login https://$RANCHER_SERVER --token $token --skip-verify --cacert ./local/rancher_cacert.pem --context local:$localns
 

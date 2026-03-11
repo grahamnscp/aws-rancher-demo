@@ -95,6 +95,8 @@ spec:
 ---
 INGEOF
 
+kubectl --kubeconfig=./local/admin-cluster1.conf apply -f ./local/otlp-ingress.yaml
+
 # ----------------------------------------
 OBS_CLUSTER_NAME=obs
 
@@ -126,10 +128,11 @@ echo
 # Add local receiver agent on observability cluster
 
 # pause for stackpacks to deploy fully
+Log "\__Sleeping for 2 minutes for stackpacks to fully initialise.."
 sleep 120
 
 # Check obs server pod is running first
-Log "\_Waiting for SUSE Observability server to be up.."
+Log "\_Looping for SUSE Observability server to be up.."
 READY=false
 while ! $READY
 do
@@ -169,7 +172,7 @@ Log "\__Creating so-extensions namespace.."
 kubectl --kubeconfig=./local/admin-cluster1.conf create namespace so-extensions
 
 Log "\__Authenticating local helm cli to SUSE Application Collection registry.."
-helm registry login dp.apps.rancher.io/charts -u $APPCOL_USER -p $APPCOL_TOKEN
+helm registry login dp.apps.rancher.io -u $APPCOL_USER -p $APPCOL_TOKEN
 
 Log "\__Creating a docker-registry secret for SUSE Application Collection.."
 kubectl --kubeconfig=./local/admin-cluster1.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n so-extensions 

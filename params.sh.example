@@ -34,7 +34,7 @@ OBS_SERVICE_TOKEN=mytokenvalue
 SEC_HOSTNAME=sec.domainname
 SEC_ADMIN_PWD=mysusesecurityadminpwd
 # helm search repo neuvector --versions
-SEC_NV_APP_VERSION=5.4.4
+SEC_NV_APP_VERSION=5.4.8
 
 # SUSE Application Collection
 APPCOL_USER="my@emaildomain.com"

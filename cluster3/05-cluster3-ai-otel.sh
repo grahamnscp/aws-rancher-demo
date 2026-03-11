@@ -252,7 +252,7 @@ OTELVEOF
 
 
 Log "\__Authenticating local helm cli to SUSE Application Collection registry.."
-helm registry login dp.apps.rancher.io/charts -u $APPCOL_USER -p $APPCOL_TOKEN
+helm registry login dp.apps.rancher.io -u $APPCOL_USER -p $APPCOL_TOKEN
 
 Log "\__Creating docker-registry application-collection secret.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=$APPCOL_USER --docker-password=$APPCOL_TOKEN -n observability

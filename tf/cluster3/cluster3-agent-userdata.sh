@@ -19,14 +19,24 @@ zypper --non-interactive install -y git bind-utils mlocate lvm2 jq nfs-client cr
 # enable for longhorn
 systemctl enable iscsid --now
 
-# nvidia
-zypper addrepo --refresh https://download.nvidia.com/suse/sle15sp6/ nvidia-sle15sp6-main
+
+# Nvidia Drivers:
+#
+#  Install open prebuilt/secureboot-signed Kernel driver
+zypper --non-interactive install --auto-agree-with-licenses nvidia-open-driver-G06-signed-cuda-kmp-default
+#
+#  Ensure userspace CUDA drivers in sync with open prebuilt/secureboot-signed Kernel driver
+version=$(rpm -qa --queryformat '%{VERSION}\n' nvidia-open-driver-G06-signed-cuda-kmp-default | cut -d "_" -f1 | sort -u | tail -n 1)
+#
+#   Install CUDA drivers
+zypper addrepo --refresh https://download.nvidia.com/suse/sle15sp7/ nvidia-cuda
 zypper --gpg-auto-import-keys refresh
-zypper --non-interactive install --auto-agree-with-licenses nvidia-open-driver-G06-signed-kmp=550.144.03 nvidia-compute-utils-G06=550.144.03
+zypper --non-interactive install --auto-agree-with-licenses nvidia-compute-utils-G06 == ${version} nvidia-persistenced == ${version}
 
 updatedb
 
-# create a systemd config script for first boot
+
+# Create a systemd config script for first boot only
 mkdir -p /root/bin/
 cat > /root/bin/suse-fb-config.sh << _EOFSCRIPT_
 #!/bin/bash

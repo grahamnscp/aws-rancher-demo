@@ -85,7 +85,18 @@ function helminstalllonghorn
   # helm install longhorn
   helm repo add longhorn https://charts.longhorn.io
   helm repo update
-  helm --kubeconfig=./local/admin-cluster1.conf install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace 
+
+  Log " \_Installing longhorn helm chart.."
+  helm --kubeconfig=./local/admin-cluster1.conf \
+    install longhorn longhorn/longhorn \
+    --namespace longhorn-system \
+    --timeout=5m
+
+  Log " \_Waiting for longhorn chart rollout.."
+  kubectl --kubeconfig=./local/admin-cluster1.conf \
+    wait pods -n longhorn-system \
+    -l app.kubernetes.io/instance=longhorn --for condition=Ready \
+    --timeout=300s
 }
 
 

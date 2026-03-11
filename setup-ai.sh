@@ -51,9 +51,17 @@ Log "===========================> cluster3: configuring cluster for suse ai.."
 bash cluster3/06-cluster3-ai-config.sh
 LogElapsedDuration
 
-# deploy suse-ai components
-Log "===========================> cluster3: deploying suse ai.."
-bash cluster3/07-cluster3-ai-install.sh
+# deploy suse-ai components:
+Log "===========================> cluster3: deploying suse ai milvus.."
+bash cluster3/07-cluster3-ai-milvus.sh
+LogElapsedDuration
+
+Log "===========================> cluster3: deploying suse ai ollama.."
+bash cluster3/08-cluster3-ai-ollama.sh
+LogElapsedDuration
+
+Log "===========================> cluster3: deploying suse ai open-webui.."
+bash cluster3/09-cluster3-ai-openwebui.sh
 LogElapsedDuration
 
 # --------------------------------------

@@ -114,10 +114,16 @@ LEOF
 
   Log " \_Installing longhorn helm chart.."
   helm upgrade --kubeconfig=./local/admin-cluster3.conf \
-  --install longhorn longhorn/longhorn \
-  --namespace longhorn-system \
-  -f ./local/longhorn-values.yaml \
-  --timeout=5m
+    --install longhorn longhorn/longhorn \
+    --namespace longhorn-system \
+    -f ./local/longhorn-values.yaml \
+    --timeout=5m
+
+  Log " \_Waiting for longhorn chart rollout.."
+  kubectl --kubeconfig=./local/admin-cluster3.conf \
+    wait pods -n longhorn-system \
+    -l app.kubernetes.io/instance=longhorn --for condition=Ready \
+    --timeout=300s
 }
 
 
