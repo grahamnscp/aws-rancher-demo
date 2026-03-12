@@ -10,9 +10,6 @@ LogStarted "Installing suse-ai on cluster3.."
 
 Log "\_Installing open webui.."
 
-###############################################################################
-# NOTE! this is out of date, needs later chart and obs pipelines adding etc.. #
-###############################################################################
 Log " \_Creating open webui helm chart values (embedded ollama).."
 cat << OWUIEOF >./local/cluster3-owui-values.yaml
 global:
@@ -30,10 +27,21 @@ persistence:
   storageClass: longhorn
 ollama:
   enabled: false
+
 pipelines:
   enabled: true
   persistence:
     storageClass: longhorn
+  extraEnvVars:
+  - name: PIPELINES_URLS
+    value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
+  - name: PRICING_JSON
+    value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/pricing.json"
+  - name: OTEL_EXPORTER_HTTP_OTLP_ENDPOINT
+    value: "http://opentelemetry-collector.observability.svc.cluster.local:4318"
+##  - name: PIPELINES_API_KEY
+##    value: "XXX"
+
 ingress:
   enabled: true
   class: ""
@@ -41,7 +49,10 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   host: $AI_HOSTNAME
   tls: true
+
 extraEnvVars:
+- name: ENV
+  value: dev
 - name: DEFAULT_MODELS
   value: "gemma:2b"
 - name: DEFAULT_USER_ROLE
@@ -71,9 +82,7 @@ extraEnvVars:
 - name: OTEL_SERVICE_NAME
   value: "Open WebUI"
 - name: OTEL_EXPORTER_HTTP_OTLP_ENDPOINT
-  value: "http://otlp-http-${OBS_HOSTNAME}:80"
-- name: OTEL_EXPORTER_OTLP_ENDPOINT 
-  value: "https://otlp-grpc-${OBS_HOSTNAME}:433"
+  value: "http://opentelemetry-collector.observability.svc.cluster.local:4318"
 - name: PIPELINES_URLS
   value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
 - name: PRICING_JSON

@@ -6,7 +6,7 @@ source ./utils/utils.sh
 # -------------------------------------------------------------------------------------
 # OpenTelelemetry setup on AI cluster
 
-AI_CLUSTER_NAME=cluster3
+AI_CLUSTER_NAME=ai
 
 LogStarted "\_Configure OpenTelemetry Collector on $AI_CLUSTER_NAME.."
 
@@ -103,6 +103,7 @@ OBS_API_KEY=`cat ./local/obs-apikey.txt`
 Log "\__Creating open-telemetry-collector API_KEY secret.."
 kubectl --kubeconfig=./local/admin-cluster3.conf create secret generic open-telemetry-collector --namespace observability --from-literal=API_KEY="$OBS_API_KEY"
 
+Log "\__Creating opentelemetry-collector chart values.."
 cat << OTELVEOF >./local/cluster3-otel-values.yaml
 global:
   imagePullSecrets:
@@ -134,6 +135,12 @@ config:
               namespaces:
                 names:
                 - gpu-operator
+        - job_name: 'milvus'
+          scrape_interval: 15s
+          metrics_path: '/metrics'
+
+          static_configs:
+            - targets: ['milvus.suse-ai.svc.cluster.local:9091']
 
   extensions:
     # Use the API key from the env for authentication
@@ -149,13 +156,12 @@ config:
       endpoint: https://otlp-grpc-${OBS_HOSTNAME}:433
       compression: snappy
       tls:
-        #insecure_skip_verify: true
-        insecure: true
+        insecure_skip_verify: true
+        #insecure: true
     otlphttp/suse-observability:
       auth:
         authenticator: bearertokenauth
       endpoint: http://otlp-http-${OBS_HOSTNAME}:80
-      compression: snappy
       tls:
         insecure: true
 

@@ -26,10 +26,20 @@ resource "aws_route53_record" "rke-cluster3" {
   records = [aws_elb.cluster3-rke-elb.dns_name]
 }
 
-# cluster3 app elb alias
+# cluster3 app elb aliases for ai
 resource "aws_route53_record" "suseai" {
   zone_id = "${var.route53_zone_id}"
   name = "ai.${var.route53_subdomain}.${var.route53_domain}"
+  type = "A"
+  alias {
+    name = "${aws_elb.cluster3-app-elb.dns_name}"
+    zone_id = "${aws_elb.cluster3-app-elb.zone_id}"
+    evaluate_target_health = false
+  }
+}
+resource "aws_route53_record" "suseaiollama" {
+  zone_id = "${var.route53_zone_id}"
+  name = "ollama.${var.route53_subdomain}.${var.route53_domain}"
   type = "A"
   alias {
     name = "${aws_elb.cluster3-app-elb.dns_name}"
