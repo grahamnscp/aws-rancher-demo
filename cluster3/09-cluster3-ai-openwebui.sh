@@ -33,14 +33,14 @@ pipelines:
   persistence:
     storageClass: longhorn
   extraEnvVars:
-  - name: PIPELINES_URLS
-    value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
-  - name: PRICING_JSON
-    value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/pricing.json"
-  - name: OTEL_EXPORTER_HTTP_OTLP_ENDPOINT
-    value: "http://opentelemetry-collector.observability.svc.cluster.local:4318"
-##  - name: PIPELINES_API_KEY
-##    value: "XXX"
+    - name: OTEL_SERVICE_NAME
+      value: "Open WebUI"
+    - name: PIPELINES_URLS
+      value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
+    - name: PRICING_JSON
+      value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/pricing.json"
+    - name: OTEL_EXPORTER_HTTP_OTLP_ENDPOINT
+      value: "http://opentelemetry-collector.observability.svc.cluster.local:4318"
 
 ingress:
   enabled: true
@@ -77,16 +77,24 @@ extraEnvVars:
   value: "1"
 - name: OMP_NUM_THREADS
   value: "1"
-- name: ENABLE_OTEL 
+- name: ENABLE_OTEL
+  value: "true"
+- name: ENABLE_OTEL_METRICS
   value: "true"
 - name: OTEL_SERVICE_NAME
   value: "Open WebUI"
 - name: OTEL_EXPORTER_HTTP_OTLP_ENDPOINT
   value: "http://opentelemetry-collector.observability.svc.cluster.local:4318"
+- name: OTEL_EXPORTER_OTLP_INSECURE
+  value: "true"
+- name: OTEL_SERVICE_NAME
+  value: "owui"
 - name: PIPELINES_URLS
   value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
 - name: PRICING_JSON
   value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/pricing.json"
+- name: OPENAI_API_KEY
+  value: "0p3n-w3bu!"
 OWUIEOF
 
 Log " \_Installing open webui.."
