@@ -22,6 +22,7 @@ bash cluster3/00-cluster3-nvidia-check.sh
 LogElapsedDuration
 
 
+# deploy ha rke2 with 2 agent gpu nodes
 Log "===========================> cluster3: installing RKE2 cluster.."
 bash cluster3/01-cluster3-rke2.sh
 LogElapsedDuration

@@ -20,6 +20,7 @@ curl -sk https://$OBS_HOSTNAME/api/stackpack/kubernetes-v2/provision \
 echo
 
 # pause for stackpack to deploy fully
+Log "\__sleeping for 2 minutes to allow stackpack to initialise.."
 sleep 120
 
 Log "\__Installing suse-observability agent on $CLUSTER_NAME.."
