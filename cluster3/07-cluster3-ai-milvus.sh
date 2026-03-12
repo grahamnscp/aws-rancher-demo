@@ -49,6 +49,10 @@ minio:
 kafka:
   name: kafka
   enabled: true
+  cluster:
+    nodeCount:
+      broker: 1
+      controller: 1
   persistence:
     accessModes:
       - ReadWriteOnce
