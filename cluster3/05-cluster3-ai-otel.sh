@@ -268,6 +268,7 @@ Log "\__Installing opentelemetry-collector helm chart on $AI_CLUSTER_NAME.."
 helm upgrade --kubeconfig=./local/admin-cluster3.conf --install opentelemetry-collector \
   oci://dp.apps.rancher.io/charts/opentelemetry-collector \
   -n observability \
+  --set manager.autoInstrumentation.go.enabled=true \
   -f ./local/cluster3-otel-values.yaml
 
 # -------------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ pipelines:
     storageClass: longhorn
   extraEnvVars:
     - name: OTEL_SERVICE_NAME
-      value: "Open WebUI"
+      value: "owui"
     - name: PIPELINES_URLS
       value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
     - name: PRICING_JSON
@@ -82,13 +82,11 @@ extraEnvVars:
 - name: ENABLE_OTEL_METRICS
   value: "true"
 - name: OTEL_SERVICE_NAME
-  value: "Open WebUI"
+  value: "owui"
 - name: OTEL_EXPORTER_HTTP_OTLP_ENDPOINT
   value: "http://opentelemetry-collector.observability.svc.cluster.local:4318"
 - name: OTEL_EXPORTER_OTLP_INSECURE
   value: "true"
-- name: OTEL_SERVICE_NAME
-  value: "owui"
 - name: PIPELINES_URLS
   value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
 - name: PRICING_JSON
@@ -97,13 +95,18 @@ extraEnvVars:
   value: "0p3n-w3bu!"
 OWUIEOF
 
-Log " \_Installing open webui.."
+Log " \_Installing open-webui.."
 helm upgrade --kubeconfig=./local/admin-cluster3.conf \
   --install open-webui oci://dp.apps.rancher.io/charts/open-webui \
   -n suse-ai \
   -f ./local/cluster3-owui-values.yaml \
   --timeout=10m
 
+Log " \_Waiting for deployment open-webui rollout.."
+kubectl --kubeconfig=./local/admin-cluster3.conf \
+  wait pods -n suse-ai \
+  -l app.kubernetes.io/instance=open-webui --for condition=Ready \
+  --timeout=300s
 
 # ----------------------------
 # post install:

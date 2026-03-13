@@ -62,6 +62,13 @@ kafka:
     storageClassName: longhorn
 MVEOF
 
+##extraConfigFiles:
+##  user.yaml: |+
+##    trace:
+##      exporter: jaeger
+##      sampleFraction: 1
+##      jaeger: url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces"
+
 Log " \_Installing milvus database.."
 helm upgrade --kubeconfig=./local/admin-cluster3.conf \
   --install milvus oci://dp.apps.rancher.io/charts/milvus \
@@ -69,11 +76,16 @@ helm upgrade --kubeconfig=./local/admin-cluster3.conf \
   -f ./local/cluster3-milvus-values.yaml \
   --timeout=5m
 
+#  --version 5.0.13 \
+
 Log " \_Waiting for deployment milvus-standalone rollout.."
 kubectl --kubeconfig=./local/admin-cluster3.conf \
   wait pods -n suse-ai \
   -l app.kubernetes.io/instance=milvus --for condition=Ready \
-  --timeout=300s
+  --timeout=900s
+
+RETVAL=$?
+echo mulvus rollout return status was: $RETVAL
 
 # --------------------------------------------------------------------
 

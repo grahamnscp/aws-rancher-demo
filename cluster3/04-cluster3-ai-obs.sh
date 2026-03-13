@@ -21,11 +21,12 @@ curl -sk https://$OBS_HOSTNAME/api/stackpack/kubernetes-v2/provision \
      -d "{\"kubernetes_cluster_name\": \"$AI_CLUSTER_NAME\"}"
 echo
 
+# pause for stackpacks to deploy fully
+Log "\__sleeping for 2 minutes to allow stackpacks to initialise.."
+sleep 120
+
 # -------------------------------------------------------------------------------------
 # Add local receiver agent on cluster3
-
-# pause for stackpacks to deploy fully
-sleep 120
 
 Log "\_Installing suse-observability agent on $AI_CLUSTER_NAME.."
 
