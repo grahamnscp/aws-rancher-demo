@@ -60,6 +60,38 @@ kubectl --kubeconfig=./local/admin-cluster3.conf \
   -l app.kubernetes.io/instance=ollama --for condition=Ready \
   --timeout=300s
 
+Log "\_Adding ingress for ollama service.."
+cat << EOF >./local/ollama-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ollama-ingress
+  namespace: suse-ai
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/upstream-keepalive-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  rules:
+  - host: ollama.$DOMAINNAME
+    http:
+      paths:
+      - backend:
+          service:
+            name: ollama
+            port:
+              number: 11434
+        path: /
+        pathType: Prefix
+EOF
+
+kubectl --kubeconfig=./local/admin-cluster3.conf apply -f ./local/ollama-ingress.yaml
+
+# test
+#curl -sk http://ollama.${DOMAINNAME}/v1/models | jq
+
 # --------------------------------------------------------------------
 
 LogCompleted "Done."
