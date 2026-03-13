@@ -108,6 +108,9 @@ kubectl --kubeconfig=./local/admin-cluster3.conf \
   -l app.kubernetes.io/instance=open-webui --for condition=Ready \
   --timeout=300s
 
+Log "\__sleeping for 2 minutes to allow open-webui to initialise.."
+sleep 120
+
 # ----------------------------
 # post install:
 #  https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#suse-ai-deploy-post
