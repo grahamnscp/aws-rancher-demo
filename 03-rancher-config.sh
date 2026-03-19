@@ -105,6 +105,9 @@ spec:
   gitBranch: main
 EOF
 
+# Add application-collection repo
+# Add suse-ai-registry repo
+
 #
 echo "${BWhi}**************************************"
 echo "Rancher Manager is running at:"
