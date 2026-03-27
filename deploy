@@ -1,0 +1,24 @@
+#!/bin/bash
+
+source ./utils/utils.sh
+
+LogStarted "=====================================> Provisioning Rancher.."
+bash setup-rancher.sh
+LogElapsedDuration
+
+LogStarted "=====================================> Provisioning SUSE Observability.."
+bash setup-observability.sh
+LogElapsedDuration
+
+#LogStarted "=====================================> Provisioning SUSE Security.."
+#bash setup-security.sh
+#LogElapsedDuration
+
+LogStarted "=====================================> Provisioning SUSE AI.."
+bash setup-ai.sh
+LogElapsedDuration
+
+LogCompleted "Done."
+
+# tidy up
+exit 0

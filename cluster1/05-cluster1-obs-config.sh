@@ -12,6 +12,7 @@ Log "\__Configure sts cli.."
 TOKEN_READY=false
 while ! $TOKEN_READY
 do
+  # compile from source for different architecture - https://github.com/ravan/so-token-fetcher
   ./utils/so-token-fetcher --url https://$OBS_HOSTNAME --username admin --password $OBS_ADMIN_PWD -auth-type default -o ./local/sts-token.txt
   if [ ! -f ./local/sts-token.txt ]; then
     R402=`./utils/so-token-fetcher --url https://$OBS_HOSTNAME --username admin --password $OBS_ADMIN_PWD -auth-type default -o ./local/sts-token.txt 2>&1 | wc -l |  sed 's/^ *//g'`

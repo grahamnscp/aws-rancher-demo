@@ -1,0 +1,23 @@
+#!/bin/bash
+
+source ./utils/utils.sh
+
+LogStarted "=====================> Teardown deployment.."
+
+Log "===========> purging temporary files from ./local dir.."
+rm -rf ./local/*
+echo 1 > ./local/.keep
+
+Log "===========> running terraform destroy.."
+cd tf
+terraform destroy -auto-approve
+cd ..
+
+Log "===========> removing tf/cluster* files from terraform directory.."
+rm -rf ./tf/cluster1-*
+rm -rf ./tf/cluster2-*
+rm -rf ./tf/cluster3-*
+
+LogElapsedDuration
+LogCompleted "=====================> Done."
+

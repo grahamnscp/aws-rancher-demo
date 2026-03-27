@@ -29,7 +29,7 @@ bash cluster1/03-cluster1-longhorn.sh
 LogElapsedDuration
 
 Log "===========================> cluster1: installing suse observability.."
-bash cluster1/04-cluster1-observavbility.sh
+bash cluster1/04-cluster1-observability.sh
 LogElapsedDuration
 
 Log "===========================> cluster1: post install configuring suse observability.."

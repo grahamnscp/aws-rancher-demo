@@ -106,7 +106,62 @@ spec:
 EOF
 
 # Add application-collection repo
+# secret
+cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
+apiVersion: v1
+kind: Secret
+metadata:
+  name: clusterrepo-auth-suseappcol
+  namespace: cattle-system
+type: kubernetes.io/basic-auth
+stringData:
+  username: $APPCOL_USER
+  password: $APPCOL_TOKEN
+EOF
+# clusterrepo
+cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: application-collection
+  annotations:
+    field.cattle.io/description: SUSE Application Collection
+spec:
+  clientSecret:
+    name: clusterrepo-auth-suseappcol
+    namespace: cattle-system
+  insecurePlainHttp: false
+  url: oci://dp.apps.rancher.io/charts
+EOF
+
 # Add suse-ai-registry repo
+# secret
+cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
+apiVersion: v1
+kind: Secret
+metadata:
+  name: clusterrepo-auth-suseaireg
+  namespace: cattle-system
+type: kubernetes.io/basic-auth
+stringData:
+  username: regcode
+  password: $SUSE_AI_SUB
+EOF
+# clusterrepo
+cat <<EOF | kubectl apply -f -  > /dev/null 2>&1
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: suse-ai-registry
+  annotations:
+    field.cattle.io/description: SUSE AI Registry
+spec:
+  clientSecret:
+    name: clusterrepo-auth-suseaireg
+    namespace: cattle-system
+  insecurePlainHttp: false
+  url: oci://registry.suse.com/ai/charts
+EOF
 
 #
 echo "${BWhi}**************************************"
