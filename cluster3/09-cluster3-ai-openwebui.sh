@@ -11,6 +11,8 @@ LogStarted "Installing suse-ai on cluster3.."
 Log "\_Installing open webui.."
 
 Log " \_Creating open webui helm chart values (embedded ollama).."
+# pinned: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/tags/v1.5.0/integrations/oi-filter/suse_ai_filter.py"
+#         "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/tags/v1.5.0/integrations/oi-filter/pricing.json"
 cat << OWUIEOF >./local/cluster3-owui-values.yaml
 global:
   imagePullSecrets:
